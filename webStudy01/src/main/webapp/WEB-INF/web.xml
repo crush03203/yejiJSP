@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" id="WebApp_ID" version="3.1">
+  <display-name>webStudy01</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  
+  
+  
+  <!-- 똑같은 이름의 파라미터가 하나의 서블릿에만 적용되는 것이 아니라 다른 서블릿에서도 사용할 수 있게 된다.   -->
+  <context-param>
+  	<param-name>imageFolder</param-name>
+  	<param-value>d:/contents/images</param-value>
+  </context-param>
+
+  <servlet>
+  	<servlet-name>ImageStreamingServlet</servlet-name>
+  	<servlet-class>kr.or.ddit.servlet01.ImageStreamingServlet</servlet-class>
+  	<!-- <init-param>
+  		<param-name>imageFolder</param-name>
+  		<param-value>d:/contents/images</param-value>
+  	</init-param> -->
+  	<load-on-startup>1</load-on-startup>
+  </servlet>
+  <servlet-mapping>
+  	<servlet-name>ImageStreamingServlet</servlet-name>
+  	<url-pattern>/imageStreaming.do</url-pattern>
+  </servlet-mapping>
+  
+
+</web-app>

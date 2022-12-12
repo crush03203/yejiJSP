@@ -1,0 +1,30 @@
+<html>
+<head>
+	<script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+</head>
+<body>  
+	
+	<select name='image'> 
+		#options#
+	</select> 
+	<input type='submit' value='전송' />
+
+	
+	<img id="" />
+	
+	
+	<script type="text/javascript">
+		$("[name=image]").on("change", function(event) {
+			$('img').attr('src','#cPath#/imageStreaming.do?image=' + $(this).val());
+		});
+	</script>
+	
+</body>    
+</html>           
+
+
+<!-- 
+<select name='image' onchange="this.form.submit();"> 
+select가 바뀔때마다 <form>으로 submit 
+ -->
+
