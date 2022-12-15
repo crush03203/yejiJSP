@@ -40,7 +40,7 @@ public class StreamCopyTest {
 	}
 //	@Test //0.0001초 소요
 	public void copytest2() throws IOException {
-//\2번째 방법은 시간을 줄일 수 있다 시간을 줄이려면 반복문을 줄여야한다		
+//  2번째 방법은 시간을 줄일 수 있다 시간을 줄이려면 반복문을 줄여야한다		
 //		targetFile = new File("D:/contents/movies/target.mp4");
 //		destFile = new File("d:/target.mp4");
 // 		위에 두 코드를 이용해서 D드라이브에 target.mp4를 만들어라

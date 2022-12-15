@@ -37,7 +37,7 @@ public class SerilalizationTest {
 //		2022-12-14 17:20:00
 		String date = String.format("%1$ty-%1$tm-%1$td %1$tH:%1$tM:%1$tS",LocalDateTime.now());
 		writeData.setDate(date);
-
+ 
 		writeFile = new File("d:/sample.dat");
 		// 어떤 형태여도 괜찮다 writeData에 writeFile를 읽어라
 	}
