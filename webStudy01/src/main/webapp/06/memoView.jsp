@@ -1,20 +1,22 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <jsp:include page="/includee/preScript.jsp"></jsp:include>
+<script src ="<%=request.getContextPath() %>/resources/js/custom.js"></script>
 </head>
 <body>
 <h4>Restful 기반의 메모 관리 </h4>
-<form action="${pageContext.request.contextPath}/memo" method="post" id = "memoform">
+<form name = "memoForm" action="${pageContext.request.contextPath}/memo" method="post" id = "memoform">
 	<input type="text" name="writer" placeholder="작성자"/> 
 	<input type="date" name="date" placeholder="작성일"/> 
 	<textarea name="content" ></textarea>
 	<input type="submit" value="등록"/>
 </form>
+<!-- 기본적으로 form 태그는 동기요청을 발생시킨다 -->
+<!-- 서브밋의  -->
 <table class = "table-bordered">
 	<thead>
 		<tr>
@@ -45,10 +47,43 @@
   </div>
 </div>
 <script type="text/javascript">
-// // 	등록버튼을 눌렀을 때
-// 	$("submit").onclick(,function(){
-		
-// 	});
+	//////////////수업////////////////////
+// 	$('[name = "memoForm"]')
+	let memoForm = $(document.memoForm).on('submit' , function(event) {
+		event.preventDefault();
+// 		event.target
+// 		thid
+// 		$(this)
+let url = this.action;
+let method = this.method;
+// let data = $(this).serialize(); // writer=작성자$data=작성일$content=내용(QueryString)
+   let data = $(this).serializeObject(); // writer=작성자$data=작성일$content=내용(QueryString)
+// {
+// 	writer:""
+// 	, date:""
+// 	, content:""
+// }
+// let memoForm = this;
+	$.ajax({
+		url : url,
+		method : method,
+		contentType:"application/json;charset=UTF-8", //request content-type을 결정
+		data : JSON.stringify(data),
+		dataType : "json", //받아오는 타입의 결정 request Accept, response content-type
+		success : function(resp) {
+			makeListBody(resp.memoList);
+			memoForm[0].reset();
+		},
+		erro : function(jqXHR, status, error) {
+			console.log(jqXHR);
+			console.log(status);
+			console.log(error);
+		}
+	 });
+		return false;
+	});
+	
+	
 	
 // 	EDD(Event Driven Development), TDD(Test Driven Development)
 	$("#exampleModal").on("show.bs.modal", function(event){
@@ -102,35 +137,36 @@
 	});
 	
 	
-// <비동기로 메모가 등록되도록 해야함>
-// 1. 등록버튼을 누른다 (client의 행위 click(button이 타겟)이벤트의 발생 submit이벤트(form이 타겟) 까지 발생 이벤트 2번 발생 )
-// 2. submit 이벤트에 의해서 발생하는 동기요청을 중단시키고, 비동기 요청으로 변경해야함
-	$("#memoform").on("submit" ,function(event) {
-		event.preventDefault() //preventDefault() 이벤트를 중단시킨다
-// 3. URL, method, data 모든 것들이 동기 요청이 가지고있었던 모든 것들이 form으로 부터 꺼내야한다
-		let url = this.action
-		let method = this.method
-		let data = $(this).serialize(); 
-		console.log(data);
-		$.ajax({
-			url : url,
-			method :method ,
-			data : data,
-			dataType : "json",
-			success : function(resp) {
-			 makeListBody(resp.memoList);
-			},
-			erro : function(jqXHR, status, error) {
-				console.log(jqXHR);
-				console.log(status);
-				console.log(error);
-
-			}
-		});
-			return false;
-	});
 	
-// 4. 비동기(Post) 요청에 의해 처리후에 리다이렉션된 요청(GET) 그 요청에 대한 처리 결과 (memolist - json)로 tbody 갱신
+// // <비동기로 메모가 등록되도록 해야함>
+// // 1. 등록버튼을 누른다 (client의 행위 click(button이 타겟)이벤트의 발생 submit이벤트(form이 타겟) 까지 발생 이벤트 2번 발생 )
+// // 2. submit 이벤트에 의해서 발생하는 동기요청을 중단시키고, 비동기 요청으로 변경해야함
+// 	$("#memoform").on("submit" ,function(event) {
+// 		event.preventDefault() //preventDefault() 이벤트를 중단시킨다
+// // 3. URL, method, data 모든 것들이 동기 요청이 가지고있었던 모든 것들이 form으로 부터 꺼내야한다
+// 		let url = this.action
+// 		let method = this.method
+// 		let data = $(this).serialize(); 
+// 		console.log(data);
+// 		$.ajax({
+// 			url : url,
+// 			method :method ,
+// 			data : data,
+// 			dataType : "json",
+// 			success : function(resp) {
+// 			 makeListBody(resp.memoList);
+// 			},
+// 			erro : function(jqXHR, status, error) {
+// 				console.log(jqXHR);
+// 				console.log(status);
+// 				console.log(error);
+
+// 			}
+// 		});
+// 			return false;
+// 	});
+	
+// // 4. 비동기(Post) 요청에 의해 처리후에 리다이렉션된 요청(GET) 그 요청에 대한 처리 결과 (memolist - json)로 tbody 갱신
 
 </script>
 <jsp:include page="/includee/postScript.jsp"></jsp:include>
