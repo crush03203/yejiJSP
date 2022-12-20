@@ -28,5 +28,18 @@
   	<session-timeout>2</session-timeout>
 <!--   	세션 타임아웃은 2분임 -->
   </session-config>
+  
+  <error-page>
+  	<error-code>500</error-code>
+  	<location>/errors/error500.jsp</location>
+  </error-page>
+  <error-page>
+  	<error-code>404</error-code>
+  	<location>/errors/error404.jsp</location>
+  </error-page>
+  <error-page>
+  	<exception-type>java.lang.NullPointerException</exception-type>
+  	<location>/errors/errorNull.jsp</location>
+  </error-page>
 
 </web-app>

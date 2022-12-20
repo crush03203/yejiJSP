@@ -6,10 +6,12 @@
 <head>
 <meta charset="UTF-8">
 <title>08/sessionDesc.jsp</title>
+<jsp:include page="/includee/preScript.jsp"></jsp:include>
+<script type="text/javascript" src="<%=request.getContextPath() %>/resources/js/custom.js"></script>
 </head>
 <body>
 <h4>session(HttpSession)</h4>
-<h4 id ="timeArea"></h4>
+<h4 id ="timerArea"></h4>
 <pre>
 	(웹)세션이란?
 		: 어플리케이션 서버를 사용하기 시작한 순간부터 사용 종료까지의 기한.
@@ -32,8 +34,22 @@
 			3) session timeout 이내에 새로운 요청을 통해 아이디가 재전송되지 않을 때.
 			4) session invalidation(명시적인 로그아웃)
 </pre>
-<script type="text/javascript">
-	$("#timeArea").sessionTimer(120);
+${pageContext.session.maxInactiveInterval }
+<div id="msgArea">
+	세션을 연장하겠습니까?
+	<input type="button" value="예" class="controlBtn" id="YES"/>
+	<input type="button" value="아니오" class="controlBtn" id="NO"/>
+</div>
+<script>
+$("#timerArea").sessionTimer(${pageContext.session.maxInactiveInterval} , {
+    msgAreaSelector : "#msgArea",
+    btnSelector : ".controlBtn"
+});
+	
+	
+	
+	
 </script>
+<jsp:include page="/includee/postScript.jsp"></jsp:include>
 </body>
 </html>

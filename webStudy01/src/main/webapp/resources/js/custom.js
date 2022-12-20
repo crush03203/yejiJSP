@@ -32,3 +32,66 @@ $.fn.log=function(){ //fn안에 log라는 함수
 	return this();
 }
 
+$.fn.sessionTimer = function(timeout, msgObj) {
+	if(!timeout)
+		throw Error("세션 타임아웃 값이 없음.");
+	const SPEED = 1000;
+	const TIMEOUT = timeout;
+	const timerArea = this;
+// 	event propagation : bubbling 방식
+	let msgaArea = null
+	if(msgObj) {
+		msgArea = $(msgObj.msgAreaSelector).on("click",msgObj.btnSelector,function(event){
+			// 		console.log(this.id + "," + $(this).prop("id"));
+			if(this.id=="YES") {
+				jobClear();
+				timerInit();
+				$.ajax({
+					method : "head"
+				});
+			} 
+			msgArea.hide();
+		}).hide();
+		
+		
+	}
+	let jobClear = function() {
+		let timerJob = timerArea.data("timerJob");
+		if(timerJob)
+			clearInterval(timerJob);
+		let msgJob = msgArea.data('msgJob');
+		if(msgJob) 
+			clearTimeout(msgJob);
+		
+	}
+	
+	let timerInit = function() {
+		if(msgObj) {
+			let msgJob = setTimeout(() => {
+				msgArea.show();
+			}, (TIMEOUT-60) * SPEED);
+			msgArea.data('msgJob',msgJob);
+		}
+		
+		let timer = TIMEOUT;// 1초마다 디스카운트해서$("#timeArea").html(timeFormat(TIMEOUT)); 이걸 반복수행 하려고 함
+		let timerJob = setInterval(() => {
+			if(timer==1) {
+				clearInterval(timerJob);
+				location.reload();
+			}
+			else
+				timerArea.html(timeFormat(--timer));
+		}, SPEED);
+		timerArea.data("timerJob",timerJob);
+	}
+	timerInit();
+	
+	let timeFormat = function(time) {
+		let min = Math.trunc(time / 60); //소수점 이하의 숫자는 버린다 Math.trunc
+		let sec = time % 60
+		return min + " : " + sec;
+	}
+	
+	return this;
+}
+
