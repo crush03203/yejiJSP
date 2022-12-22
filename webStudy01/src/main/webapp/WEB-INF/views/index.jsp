@@ -1,4 +1,21 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-//단독으로 도큐먼트를 만들 수 없는 것
+ <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <h4>WELCOME</h4>
+<c:choose>
+	<c:when test="${not empty sessionScope.authMember }">
+		<form name="logoutForm"action="<c:url value= '/login/logout.do'/>" method="post"></form>
+		<a href="#" class="logoutBtn">${authMember.memId } 님 로그아웃</a>
+		<script>
+			$(".logoutBtn").on("click", function(event) {
+				event.preventDefault();
+				document.logoutForm.submit();
+				return false;
+			});
+		</script>
+	</c:when>
+	<c:otherwise>
+		<a href="<c:url value= '/login/loginForm.jsp'/>"> 로그인 </a> 
+<!-- 		로그아웃일지라도 post방식이어야함 -->
+	</c:otherwise>
+</c:choose>
