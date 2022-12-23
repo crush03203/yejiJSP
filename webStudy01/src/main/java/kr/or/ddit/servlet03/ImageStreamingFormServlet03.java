@@ -10,8 +10,6 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-
 /**
  * 현재 컨트롤러가 받아야하는 요청의 종류
 	1. UI 제공 요청
@@ -19,8 +17,6 @@ import javax.servlet.http.HttpServletResponse;
  *
  *
  */
-
-
 @WebServlet("/03/imageForm.do") //응답은 여기서 하고   (model 2방식)
 public class ImageStreamingFormServlet03 extends HttpServlet {
 	

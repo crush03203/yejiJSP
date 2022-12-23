@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,6 +37,7 @@ public class LoginProcessControllerServlet extends HttpServlet{
 	  }
       String memId = req.getParameter("memId");
       String memPass = req.getParameter("memPass");
+      String saveId = req.getParameter("saveId");
       MemberVO member = new MemberVO();
       member.setMemId(memId);
       member.setMemPass(memPass);
@@ -45,12 +47,23 @@ public class LoginProcessControllerServlet extends HttpServlet{
       if(valid) {
 //         2.
          if(authenticate(member)){
-        	 session.setAttribute("authMember", member);
-            viewName = "redirect:/";
+        	 Cookie saveIdCookie = new Cookie("saveId" ,member.getMemId());
+//        	 ex) wwww[blog].naver.com
+        	 saveIdCookie.setDomain("localhost");
+        	 saveIdCookie.setPath(req.getContextPath());
+        	 int maxAge = 0;
+        	 if(StringUtils.isNoneBlank(saveId)) {
+        		 maxAge = 60*60*24*5; //5일동안
+        	 }
+        	 saveIdCookie.setMaxAge(maxAge);
+        	 resp.addCookie(saveIdCookie);
+        	  session.setAttribute("authMember", member);
+              viewName = "redirect:/";
          }else {
         	session.setAttribute("validId", memId);
         	session.setAttribute("message", "비밀번호 오류");
-            viewName = "redirect:/login/loginForm.jsp";
+            viewName = "redirect:/login/loginForm.jsp"; //인증방식에서 거의 대부분 redirect 방식이고
+//            redirect 응답을 한번 보내서 req를 한번 지워준다 
          }
       }else {
     	  session.setAttribute("message", "아이디나 비밀번호 누락");

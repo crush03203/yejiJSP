@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 
 public class CookieHttpServletRequestWrapper extends HttpServletRequestWrapper{
 	
-	private Map<String, Cookie> cookieMap;
+	private Map<String, Cookie> cookieMap; //우리가 사용하고 있는 이엘객체 ?
 	
 	public CookieHttpServletRequestWrapper(HttpServletRequest request) {
 		super(request);

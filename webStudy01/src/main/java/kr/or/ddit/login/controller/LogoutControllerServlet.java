@@ -17,13 +17,14 @@ public class LogoutControllerServlet extends HttpServlet{
 //		session.removeAttribute("authMember");
 		session.invalidate(); //우리가 지우지 않더라도 세션을 자동으로 종료시켜준다
 		
-		String viewName = "redirect:/";
+		String viewName = "redirect:/"; //
 //		 5.
 	      if(viewName.startsWith("redirect:")) {
 	    	 viewName = viewName.substring("redirect:".length());
 	         resp.sendRedirect(req.getContextPath() + viewName);
 	      }else {
-	         // 디스패치로 포워딩
+	         
+	    	  // 디스패치로 포워딩
 	         req.getRequestDispatcher(viewName).forward(req, resp);
 	         
 	     

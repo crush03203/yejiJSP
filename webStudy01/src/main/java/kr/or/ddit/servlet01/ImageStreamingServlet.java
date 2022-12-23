@@ -52,6 +52,11 @@ public class ImageStreamingServlet extends HttpServlet {
 		}
 		
 		
+//		이시점에서 쿠키를 리스판스에서 숨겨야함
+		Cookie imageCookie = new Cookie("imageCookie", imageName);
+		imageCookie.setPath(req.getContextPath());
+		imageCookie.setMaxAge(60*60*24*3);
+		resp.addCookie(imageCookie);
 		
 		
 		FileInputStream fis=null;

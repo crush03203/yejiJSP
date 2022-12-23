@@ -1,10 +1,10 @@
 <%@page import="java.io.PrintWriter"%>
 <%@page import="java.io.File"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-    
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+
 <!-- ImageStreamingFormServlet03  -->
-    
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,43 +13,39 @@
 
 <!-- jpeg-red, png-green, gif-blue -->
 <style>
-	.red {
-		background-color: red;
-	}
-	.green {
-		background-color: green;
-	}
-	.blue{
-		background-color: blue
-	}
+.red {
+	background-color: red;
+}
+
+.green {
+	background-color: green;
+}
+
+.blue {
+	background-color: blue
+}
 </style>
 
 
 
-<script src="<%=request.getContextPath() %>/resources/js/jquery-3.6.1.min.js"></script>
-
-
-
+<script
+	src="<%=request.getContextPath()%>/resources/js/jquery-3.6.1.min.js"></script>
 </head>
 <body>
-	
+	<form name="imgForm"
+		action='<%=request.getContextPath()%>/imageStreaming.do'>
+		<select name='image'>
 
-	<form name="imgForm" action='<%=request.getContextPath()%>/imageStreaming.do'>
-	<select name='image'> 
-		
-	</select> 
-	<input type='submit' value='전송' />
+		</select> <input type='submit' value='전송' />
 	</form>
-	<div id="imgArea">
-		
-	</div>
-	
+	<div id="imgArea"></div>
+
 	<!-- 
 		처리할 이벤트의 종류
 		img태그를 동적으로 처리할 것 
 	 -->
-	
-	
+
+
 	<script>
 
 	
@@ -120,6 +116,11 @@
 					
 				});
 				SELECTTAG.append(options);
+				<c:if test="${not empty cookie['imageCookie']}">
+					SELECTTAG.val("${cookie['imageCookie']['value']}"); 
+				// 	쿠키가 있을 때 실행되어야함
+					SELECTTAG.trigger('change');
+				</c:if>
 				
 				
 				
@@ -137,10 +138,6 @@
 						
 					}
 				}); */
-			
-				
-				
-			
 			
 				
 				/* for(var i = 0; i <= resp.length; i++) {
@@ -162,6 +159,6 @@
 
 
 
-   
+
 </body>
 </html>

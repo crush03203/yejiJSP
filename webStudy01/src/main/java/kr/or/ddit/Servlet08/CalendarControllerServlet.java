@@ -1,4 +1,4 @@
-package kr.or.ddit.Servlet08;
+package kr.or.ddit.servlet08;
 
 import java.io.IOException;
 import java.util.Calendar;

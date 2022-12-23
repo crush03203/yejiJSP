@@ -20,8 +20,9 @@
 	<form method="post" action="<c:url value='/login/loginProcess.do'/>">
 		<ul>
 			<li>
-				<input type="text" name="memId" placeholder="아이디" value="${validId}"/>
-				<input type="checkbox" name="saveId" />아이디 기억하기
+				<c:set var="saveId" value="${cookie['saveId']['value'] }"/> <!-- saveId저장되어있는 쿠키 객체를 가지고 있거나 아니면 아무것도 가지고 있지 않거나 -->
+				<input type="text" name="memId" placeholder="아이디" value="${not empty validId ? validId : saveId}"/>
+				<input type="checkbox" name="saveId" ${not empty saveId ? 'checked' : '' }/>아이디 기억하기
 <!-- 1. 얘를 체크한 상태에서 복원 기억시간은 최대 5일까지 아이디를 기억시키게하기 -->
 <!-- 2. 체크박스를 체크하지 않고 로그인 한 경우 다음 로그인때 기존 쿠키까지 지워져야함 -->
 
