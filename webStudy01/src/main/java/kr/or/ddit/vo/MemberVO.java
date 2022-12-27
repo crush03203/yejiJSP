@@ -16,6 +16,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  *       ==, equals(주소를 비교할지 뭘 비교할지 몰라) 차이점
  * 5. 객체의 상태 확인 방법 제공 : toString
  * 6. 객체 직렬화 가능 (transient를 추가하면 직렬화 하지 않음, @JsonIgnore 추가하면 마샬링 하지 않음)
+ *
+ * 회원 관리를 위한 Doamin Layer
  * 
  */
 public class MemberVO implements Serializable {
