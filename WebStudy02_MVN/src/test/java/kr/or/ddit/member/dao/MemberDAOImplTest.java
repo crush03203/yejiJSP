@@ -1,5 +1,6 @@
 package kr.or.ddit.member.dao;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
@@ -46,7 +47,9 @@ public class MemberDAOImplTest {
 
    @Test
    public void testDeleteMember() {
-      fail("Not yet implemented");
+    int rowcnt = dao.deleteMember("b001");
+    assertEquals(1, rowcnt);
+    
    }
 
 }

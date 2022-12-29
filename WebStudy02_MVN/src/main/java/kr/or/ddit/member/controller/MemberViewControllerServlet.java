@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import kr.or.ddit.member.service.MemberService;
 import kr.or.ddit.member.service.MemberServiceImpl;
+import kr.or.ddit.mvc.view.InternalResourceViewResolver;
 import kr.or.ddit.vo.MemberVO;
 
 @WebServlet("/member/memberView.do")
@@ -31,14 +32,10 @@ public class MemberViewControllerServlet extends HttpServlet{
 //		3. 
 		req.setAttribute("member", member);
 //		4.
-		String viewName = "/WEB-INF/views/member/memberView.jsp";
-//		5.
-		if(viewName.startsWith("redirect:")) {
-			viewName = viewName.substring("redirect:".length());
-			resp.sendRedirect(req.getContextPath() + viewName);
-		}else {
-			req.getRequestDispatcher(viewName).forward(req, resp);
-		}
+		String viewName = "member/memberView";
+		
+		new InternalResourceViewResolver("/WEB-INF/views/", ".jsp").resolveView(viewName, req, resp );
+		
 	}
 }
 
