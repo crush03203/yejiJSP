@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.prod.dao.ProdDAO">
+	
+	
+	<sql id="searchFrag">
+      <where>
+          <if test="simpleCondition neq null and @org.apache.commons.lang3.StringUtils@isNotBlank(simpleCondition.searchWord)">
+           <choose>
+              <when test="simpleCondition.searchType eq 'name'">
+                 INSTR(MEM_NAME, #{simpleCondition.searchWord}) > 0
+              </when>
+              <when test="simpleCondition.searchType eq 'address'">
+                 INSTR(MEM_ADD1, #{simpleCondition.searchWord}) > 0
+              </when>
+              <otherwise>
+                 INSTR(MEM_NAME, #{simpleCondition.searchWord}) > 0
+                 OR
+                 INSTR(MEM_ADD1, #{simpleCondition.searchWord}) > 0
+              </otherwise>
+           </choose>
+          </if> 
+       </where>            
+   </sql>
+	
+	
+	
+	
+	
     <!-- 중첩map방식 -->
     <resultMap type="ProdVO" id="prodMap" autoMapping="true">
           <id property="prodId" column="PROD_ID"/>

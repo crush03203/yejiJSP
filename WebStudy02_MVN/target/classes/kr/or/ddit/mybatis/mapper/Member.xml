@@ -1,67 +1,90 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.member.dao.MemberDAO">
+   <sql id="searchFrag">
+      <where>
+          <if test="simpleCondition neq null and @org.apache.commons.lang3.StringUtils@isNotBlank(simpleCondition.searchWord)">
+           <choose>
+              <when test="simpleCondition.searchType eq 'name'">
+                 INSTR(MEM_NAME, #{simpleCondition.searchWord}) > 0
+              </when>
+              <when test="simpleCondition.searchType eq 'address'">
+                 INSTR(MEM_ADD1, #{simpleCondition.searchWord}) > 0
+              </when>
+              <otherwise>
+                 INSTR(MEM_NAME, #{simpleCondition.searchWord}) > 0
+                 OR
+                 INSTR(MEM_ADD1, #{simpleCondition.searchWord}) > 0
+              </otherwise>
+           </choose>
+          </if> 
+       </where>            
+   </sql>
 
-   <select id="selectMemberList" resultType="MemberVO">
-      WITH CARTVIEW AS (
-          SELECT CART_MEMBER, COUNT(DISTINCT CART_PROD) CART_COUNT
-          FROM CART
-          GROUP BY CART_MEMBER
-      )
-      SELECT mem_id, MEM_NAME, MEM_MAIL, MEM_HP,  MEM_ADD1, MEM_ADD2, MEM_MILEAGE,
-             (
-                  SELECT COUNT(DISTINCT CART_PROD)
-                  FROM CART
-                  WHERE CART_MEMBER = MEM_ID
-               ) CART_COUNT
-      FROM MEMBER LEFT OUTER JOIN CARTVIEW ON (MEM_ID = CART_MEMBER)                            
+   <select id="selectTotalRecord" resultType="int" parameterType="pagingVO">
+      SELECT COUNT(*)
+      FROM MEMBER
+      <include refid="searchFrag" />
+   </select>
+
+   <select id="selectMemberList" resultType="MemberVO" parameterType="PagingVO">
+      
+      SELECT B.*
+      FROM (
+         SELECT A.*, ROWNUM RNUM
+         FROM (
+             SELECT MEM_ID, MEM_NAME, MEM_MAIL, MEM_HP 
+                , MEM_ADD1, MEM_MILEAGE
+                , (SELECT COUNT(DISTINCT CART_PROD)
+                   FROM CART 
+                   WHERE CART_MEMBER = MEM_ID) CART_COUNT
+             FROM MEMBER
+             <include refid="searchFrag" />
+             ORDER BY ROWID DESC
+          ) A
+       ) B  
+       <![CDATA[
+       WHERE RNUM >= #{startRow} AND RNUM <= #{endRow}
+       ]]>                             
    </select>
    
-      <resultMap type="MemberVO" id="memberMap" autoMapping="true">
-      <id property="memId" column="MEM_ID" />
-      <collection property="prodList" ofType="ProdVO" autoMapping="true">
-         <association property="buyer" javaType="BuyerVO" autoMapping="true">
-         </association>
+   
+   <resultMap type="MemberVO" id="memberMap" autoMapping="true">
+      <id property="memId" column="MEM_ID"/>
+      <collection property="prodList" ofType="ProdVO" autoMapping="true" >
+         <association property="buyer" javaType="BuyerVO" autoMapping="true" />
+<!--          PROPERTY와 COLUMN이 같은 경우 autoMapping 넣으면 따로 적지 않아도 됨.    -->
+<!--          <result property="buyerName" column="BUYER_NAME" /> -->
       </collection>
-   	  </resultMap>
+   </resultMap>
+   
    
    <select id="selectMember" parameterType="string" resultMap="memberMap">
-     WITH CARTVIEW AS (
+      WITH CARTVIEW AS(
          SELECT DISTINCT CART_MEMBER, CART_PROD
-         FROM CART 
-      ), PRODVIEW AS (
-         SELECT PROD.*
-               , LPROD_NM
-               , BUYER.*
-         FROM PROD INNER JOIN  LPROD ON (PROD_LGU = LPROD_GU) 
-                   INNER JOIN  BUYER ON (PROD_BUYER = BUYER_ID) 
+         FROM CART
       ), CARTPROD AS (
          SELECT CART_MEMBER
-                , PRODVIEW.*
-         FROM CARTVIEW INNER JOIN PRODVIEW ON (CART_PROD = PROD_ID) 
+              ,PRODVIEW.*
+         FROM CARTVIEW INNER JOIN PRODVIEW ON (CART_PROD = PROD_ID)
       )
-      
-      SELECT 
-       mem_id, mem_pass,  mem_name,                                 
-       mem_regno1,mem_regno2,                                       
-       to_char(mem_bir, 'YYYY-MM-DD') mem_bir,                      
-       mem_zip, mem_add1,  mem_add2,                                
-       mem_hometel, mem_comtel,  mem_hp,                            
-       mem_mail, mem_job, mem_like,                                 
-       mem_memorial,                                                
-       to_char(mem_memorialday, 'YYYY-MM-DD') mem_memorialday,      
-       mem_mileage,  mem_delete
-       , PROD_ID, PROD_NAME, PROD_COST, PROD_PRICE, PROD_MILEAGE  <!-- PRODVO  -->
-       , LPROD_NM
-       , BUYER_NAME, BUYER_ADD1, BUYER_CHARGER                                   
-      FROM                                                         
-          member  LEFT OUTER JOIN  CARTPROD  ON (MEM_ID = CART_MEMBER)  <!-- 한번도 구매한적 없는 사람도 로그인은 할수있어야 됨 => 차집합 -->                             
-      where mem_id = #{memId}                                        
+      SELECT                                                        
+          mem_id,    mem_pass,    MEM_NAME,                         
+          mem_regno1,    mem_regno2,                                
+          to_char(mem_bir, 'YYYY-MM-DD') MEM_BIR,                   
+          mem_zip,    mem_add1,    mem_add2,                        
+          mem_hometel,    mem_comtel,    mem_hp,                    
+          mem_mail,    mem_job,    mem_like,                        
+          mem_memorial,                                             
+          TO_CHAR(mem_memorialday, 'YYYY-MM-DD') mem_memorialday,   
+          mem_mileage,                                              
+          mem_delete,
+          PROD_ID, PROD_NAME, PROD_COST, PROD_PRICE, PROD_MILEAGE,
+          LPROD_NM,
+          BUYER_NAME, BUYER_ADD1, BUYER_CHARGER                                                       
+      FROM member LEFT OUTER JOIN CARTPROD ON(MEM_ID = CART_MEMBER)                                             
+      WHERE MEM_ID = #{memId}                                              
    </select>
-   
-   
-   
-   
    
    <insert id="insertMember" parameterType="MemberVO">
       INSERT INTO MEMBER (

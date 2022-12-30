@@ -9,6 +9,7 @@ import kr.or.ddit.login.service.AuthenticateServiceImpl;
 import kr.or.ddit.member.dao.MemberDAO;
 import kr.or.ddit.member.dao.MemberDAOImpl;
 import kr.or.ddit.vo.MemberVO;
+import kr.or.ddit.vo.PagingVO;
 
 public class MemberServiceImpl implements MemberService {
 	// 결합력 최상
@@ -29,8 +30,14 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public List<MemberVO> retrieveMemberList() {
-		List<MemberVO> memberList = memberDAO.selectMemberList();
+	public List<MemberVO> retrieveMemberList(PagingVO<MemberVO> pagingVO) {
+		pagingVO.setTotalRecord(memberDAO.selectTotalRecord(pagingVO));
+	
+		
+		List<MemberVO> memberList = memberDAO.selectMemberList(pagingVO);
+		
+		pagingVO.setDataList(memberList);
+		
 		return memberList;
 	}
 

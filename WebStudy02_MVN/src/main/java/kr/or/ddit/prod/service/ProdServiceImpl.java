@@ -1,10 +1,13 @@
 package kr.or.ddit.prod.service;
 
+import java.util.List;
+
 import kr.or.ddit.exception.UserNotFoundException;
 import kr.or.ddit.login.service.AuthenticateService;
 import kr.or.ddit.login.service.AuthenticateServiceImpl;
 import kr.or.ddit.prod.dao.ProdDAO;
 import kr.or.ddit.prod.dao.ProdDAOImpl;
+import kr.or.ddit.vo.PagingVO;
 import kr.or.ddit.vo.ProdVO;
 
 public class ProdServiceImpl implements ProdService {
@@ -16,6 +19,20 @@ public class ProdServiceImpl implements ProdService {
 		if(prod == null)
 			throw new RuntimeException(String.format( "%s는 없는 상품", prodId));
 		return prod;
+	}
+
+	@Override
+	public List<ProdVO> retrieveProdList(PagingVO<ProdVO> pagingVO) {
+		pagingVO.setTotalRecord(prodDAO.selectTotalRecord(pagingVO));
+		
+		List<ProdVO> prodList = prodDAO.selectProdList(pagingVO);
+		
+		pagingVO.setDataList(prodList);
+		
+		return prodList;
+		
+		
+		
 	}
 
 }
