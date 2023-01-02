@@ -9,20 +9,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebServlet("/login/logout.do")
-public class LogoutControllerServlet extends HttpServlet{
+import kr.or.ddit.mvc.AbstractController;
+
+public class LogoutController implements AbstractController{
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public String process(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		HttpSession session = req.getSession();
 //		session.removeAttribute("authMember");
 		session.invalidate();
 		
-		String viewName = "redirect:/";
-		if(viewName.startsWith("redirect:")) {
-			viewName = viewName.substring("redirect:".length());
-			resp.sendRedirect(req.getContextPath() + viewName);
-		}else {
-			req.getRequestDispatcher(viewName).forward(req, resp);
-		}
+		return  "redirect:/";
+		
 	}
 }

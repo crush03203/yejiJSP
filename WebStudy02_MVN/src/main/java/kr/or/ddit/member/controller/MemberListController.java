@@ -15,6 +15,7 @@ import com.ctc.wstx.util.StringUtil;
 
 import kr.or.ddit.member.service.MemberService;
 import kr.or.ddit.member.service.MemberServiceImpl;
+import kr.or.ddit.mvc.AbstractController;
 import kr.or.ddit.mvc.view.InternalResourceViewResolver;
 import kr.or.ddit.vo.MemberVO;
 import kr.or.ddit.vo.PagingVO;
@@ -22,14 +23,11 @@ import kr.or.ddit.vo.SearchVO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@WebServlet("/member/memberList.do")
-public class MemberListControllerServlet extends HttpServlet{
+public class MemberListController implements AbstractController{
 	private MemberService service = new MemberServiceImpl();
 	
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		req.setCharacterEncoding("UTF-8");
-		
+	public String process(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String pageParam = req.getParameter("page");
 		String searchType = req.getParameter("searchType");
 		String searchWord = req.getParameter("searchWord");
@@ -51,8 +49,7 @@ public class MemberListControllerServlet extends HttpServlet{
 		
 		String viewName = "member/memberList";
 		
-//		5
-		new InternalResourceViewResolver("/WEB-INF/views/", ".jsp").resolveView(viewName, req, resp );
+		return viewName;
 	}
 }
 

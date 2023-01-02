@@ -36,11 +36,12 @@ public class InternalResourceViewResolver implements ViewResolver {
       if(viewName.startsWith("redirect:")) { //viewName이 redirect:로 시작 할 경우
          viewName = viewName.substring("redirect:".length()); // redirect:길이 만큼 잘라라 => redirect: 이부분 삭제
          resp.sendRedirect(req.getContextPath() + viewName); //   req.getContextPath() +  /login/loginForm.jsp
-      }else { //forward할 경우
-         req.getRequestDispatcher(prefix + viewName + suffix).forward(req, resp);
+      }else if(viewName.startsWith("forward:")) { //forward할 경우
+    	  viewName = viewName.substring("forward:".length());
+    	  req.getRequestDispatcher(viewName).forward(req, resp);
+      } else {
+    	  req.getRequestDispatcher(prefix + viewName + suffix).forward(req, resp);
       }
-      
-      
       
    }
 

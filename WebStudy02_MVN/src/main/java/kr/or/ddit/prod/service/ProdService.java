@@ -17,6 +17,6 @@ public interface ProdService {
 	 * call by reference 구조에 따라 totalRecord와 dataList를 pagingVO에 넣어줌
 	 * @param pagingVO
 	 */
-	public List<ProdVO> retrieveProdList(PagingVO<ProdVO> pagingVO);
+	public void retrieveProdList(PagingVO<ProdVO> pagingVO);
 	
 }

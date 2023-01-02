@@ -17,6 +17,8 @@ import lombok.ToString;
 @EqualsAndHashCode(of="prodId")
 @ToString(exclude="prodDetail") //부하가 걸릴거같은 거는 tostring에서 제외시켜줘야됨
 public class ProdVO implements Serializable  {
+	
+   private int rnum;
    private String prodId;
    private String prodName;
    
@@ -44,7 +46,11 @@ public class ProdVO implements Serializable  {
    private Integer prodQtyin;
    private Integer prodQtysale;
    private Integer prodMileage;
+   
    private Set<MemberVO> memberSet; //has many
+   
+   private int memCount;
+   
    
    
    

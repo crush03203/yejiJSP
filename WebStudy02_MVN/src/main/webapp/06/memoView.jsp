@@ -105,7 +105,7 @@ let method = this.method;
 					$("<td>").html(memo.writer)		
 					, $("<td>").html(this.date)		
 				).attr({
-					"data-bs-toggle":"modal"
+					  "data-bs-toggle":"modal"
 					, "data-bs-target":"#exampleModal"
 				}).data("memo",memo);
 				trTags.push(tr);

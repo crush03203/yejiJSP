@@ -12,20 +12,20 @@ import org.apache.commons.lang3.StringUtils;
 
 import kr.or.ddit.member.service.MemberService;
 import kr.or.ddit.member.service.MemberServiceImpl;
+import kr.or.ddit.mvc.AbstractController;
 import kr.or.ddit.mvc.view.InternalResourceViewResolver;
 import kr.or.ddit.vo.MemberVO;
 
-@WebServlet("/member/memberView.do")
-public class MemberViewControllerServlet extends HttpServlet{
+public class MemberViewController implements AbstractController{
 	private MemberService service = new MemberServiceImpl();
 	
 	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	public String process(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 //		1. 
 		String memId = req.getParameter("who");
 		if(StringUtils.isBlank(memId)) {
 			resp.sendError(HttpServletResponse.SC_BAD_REQUEST);
-			return;
+			return null;
 		}
 //		2. 
 		MemberVO member = service.retrieveMember(memId);
@@ -34,8 +34,7 @@ public class MemberViewControllerServlet extends HttpServlet{
 //		4.
 		String viewName = "member/memberView";
 		
-		new InternalResourceViewResolver("/WEB-INF/views/", ".jsp").resolveView(viewName, req, resp );
-		
+		return viewName;
 	}
 }
 

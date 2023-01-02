@@ -22,17 +22,11 @@ public class ProdServiceImpl implements ProdService {
 	}
 
 	@Override
-	public List<ProdVO> retrieveProdList(PagingVO<ProdVO> pagingVO) {
-		pagingVO.setTotalRecord(prodDAO.selectTotalRecord(pagingVO));
-		
-		List<ProdVO> prodList = prodDAO.selectProdList(pagingVO);
-		
-		pagingVO.setDataList(prodList);
-		
-		return prodList;
-		
-		
-		
+	public void retrieveProdList(PagingVO<ProdVO> pagingVO) {
+		int totalRecord = prodDAO.selectTotalRecord(pagingVO);
+		pagingVO.setTotalRecord(totalRecord);
+		List<ProdVO> dataList = prodDAO.selectProdList(pagingVO);
+		pagingVO.setDataList(dataList);
 	}
 
 }
