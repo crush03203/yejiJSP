@@ -7,6 +7,10 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h4>404 에러 페이지</h4>
+
+<h4>404에러페이지</h4>
+
+
+
 </body>
 </html>

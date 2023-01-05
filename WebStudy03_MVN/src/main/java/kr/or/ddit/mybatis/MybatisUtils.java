@@ -8,16 +8,16 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
 public class MybatisUtils {
-	private static SqlSessionFactory sqlSessionFactory;
-	static {
-//		MybatisUtils가 실행될 때 딱 한번 실행되는 static
-		String configPath = "kr/or/ddit/mybatis/mybatis-config.xml";
+	private static SqlSessionFactory sqlSessionFactory; //SqlSessionFactory => 싱글톤 
+	
+	static { //MybatisUtils클래스가 실행될 때 처음딱한번만 실행되는 구문
+		String configPath  = "kr/or/ddit/mybatis/mybatis-config.xml"; // mybatis-config.xml 읽어들이기 
 		try(
-			 Reader reader = Resources.getResourceAsReader(configPath);
+			Reader reader = Resources.getResourceAsReader(configPath);
 		) {
 			sqlSessionFactory = new SqlSessionFactoryBuilder().build(reader);
 		} catch (IOException e) {
-			throw new RuntimeException();
+			throw new RuntimeException(e);
 		}
 	}
 	

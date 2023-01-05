@@ -1,11 +1,19 @@
 package kr.or.ddit.exception;
 
+
 /**
- * 인증 처리에서 사용할 커스텀 예외(해당 사용자가 존재하지 않을때 발생시킴)
+ * 인증처리에서 사용할 커스텀 예외(해당 사용자가 존재하지 않을 때 발생시킴) 
  *
  */
+
+
+
+
+//커스텀 예외로 만들기 
 public class UserNotFoundException extends RuntimeException{
 
+	// alt + shift + s >  generate superclass 선택
+	
 	public UserNotFoundException() {
 		super();
 		// TODO Auto-generated constructor stub

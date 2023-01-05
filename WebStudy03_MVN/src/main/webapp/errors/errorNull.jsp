@@ -7,6 +7,10 @@
 <title>Insert title here</title>
 </head>
 <body>
-<h4>NullPointer 에러 페이지</h4>
+
+<h4>NullPointException에러페이지</h4>
+
+
+
 </body>
 </html>

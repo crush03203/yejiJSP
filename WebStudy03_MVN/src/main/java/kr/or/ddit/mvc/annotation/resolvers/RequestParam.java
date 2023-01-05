@@ -5,15 +5,21 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+
+
+
 /**
- * 요청 파라미터(request parameter) 중 특정 파라미터(value) 하나의 값을 획득하기 위한 설정.
- * 	ex) @RequestParam("who") : request.getParameter("who"), req.getParameterValues("who");
+ * 요청 파라미터 (request parameter) 중 특정 파라미터(value) 하나의 값을 획득하기 위한 설정  
+ * ex) @RequestParam("who") : request.getParameter("who"), req.getParameterValues("who");
  *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.PARAMETER)
 public @interface RequestParam {
+
 	String value();
-	boolean required() default true;
-	String defaultValue() default "";
+	boolean required() default true; //필수파라미터
+	String defaultValue() default ""; //초기값 ""으로 세팅
+	
+	
 }

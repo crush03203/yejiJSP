@@ -7,8 +7,7 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(of="buyerId")
-
-public class BuyerVO implements Serializable{
+public class BuyerVO implements Serializable {
 	private String buyerId;
 	private String buyerName;
 	private String buyerLgu;
