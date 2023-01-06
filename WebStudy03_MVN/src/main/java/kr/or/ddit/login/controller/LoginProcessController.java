@@ -1,11 +1,9 @@
 package kr.or.ddit.login.controller;
 
 import java.io.IOException;
+import java.util.Base64;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -32,6 +30,12 @@ import kr.or.ddit.vo.MemberVO;
  *
  */
 
+/* 목적) 로그인이 되게 하는 것
+상황 )
+1. 디벨로퍼에 비밀번호는 java가 암호화되어 저장되어있다
+2. 로그인을 담당하는 건 로그인 컨트롤러임
+해결 ) 
+*/
 
 @Controller
 public class LoginProcessController  {
@@ -79,11 +83,6 @@ public class LoginProcessController  {
 				//4번단계 : view결정 
 				if(ServiceResult.OK.equals(result)) { //(authenticate여기로 member다시 넘기기 => memId와 memPass가 서로 같다? 그럼 2차도 통과완료!) => 인증성공시
 					
-					
-					
-					
-					
-	
 					
 					//"아이디저장" 체크했을 경우
 					Cookie saveIdCookie = new Cookie("saveId", member.getMemId()); //쿠키하나 만들기 

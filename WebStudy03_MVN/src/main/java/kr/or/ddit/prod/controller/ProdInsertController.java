@@ -29,21 +29,18 @@ import kr.or.ddit.vo.ProdVO;
 @Controller
 public class ProdInsertController  {
    
-   
    private ProdService service = new ProdServiceImpl();
-
    private OthersDAO othersDAO = new OthersDAOImpl();
    
    private void addAttribute(HttpServletRequest req) {
       req.setAttribute("lprodList", othersDAO.selectLprodList());
       req.setAttribute("buyerList", othersDAO.selectBuyerList(null)); //"전체" 거래처 조회 
-   }
+   } //   2 이게실행된다
    
-   
-   
+//   요청을 받는 것 
    @RequestMapping("/prod/prodInsert.do")
    public String process(HttpServletRequest req)  {
-      addAttribute(req);
+      addAttribute(req); //1 이걸 실행되면
       return "prod/prodForm";
    }
 

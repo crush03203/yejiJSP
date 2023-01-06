@@ -46,7 +46,7 @@ public interface ProdDAO {
 	 * @return 수정된 상품 수 
 	 */
 	public int updateProd(ProdVO prod);
-
+	
 //	public int deleteProd(String prodId);
 	
 }

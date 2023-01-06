@@ -3,6 +3,8 @@ package kr.or.ddit.login.service;
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import kr.or.ddit.enumpkg.ServiceResult;
 import kr.or.ddit.exception.UserNotFoundException;
@@ -13,7 +15,7 @@ import kr.or.ddit.vo.MemberVO;
 public class AuthenticateServiceImpl implements AuthenticateService {
 
 	private MemberDAO memberDAO = new MemberDAOImpl();
-	
+	PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 	@Override
 	public ServiceResult authenticate(MemberVO member) {
 		
@@ -35,7 +37,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 		String savedPass = savedMember.getMemPass(); //기존에 가지고있는 비번
 		ServiceResult result = null;
 		
-		if(savedPass.equals(inputPass)) { //기존에 저장되어있던 비번과 넘어온 비번이 같다면
+		if(encoder.matches(inputPass, savedPass)) { //기존에 저장되어있던 비번과 넘어온 비번이 같다면
 			
 			try {
 //				member.setMemName(savedMember.getMemName()); //인증에 성공했을 때 savedMember안에 저장되어있는 MemName을 가져올 수 있음 

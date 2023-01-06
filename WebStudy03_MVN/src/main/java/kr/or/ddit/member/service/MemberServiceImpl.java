@@ -2,6 +2,9 @@ package kr.or.ddit.member.service;
 
 import java.util.List;
 
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import kr.or.ddit.enumpkg.ServiceResult;
 import kr.or.ddit.exception.UserNotFoundException;
 import kr.or.ddit.login.service.AuthenticateService;
@@ -16,7 +19,7 @@ public class MemberServiceImpl implements MemberService {
 	//결합력 최상 -> 여기가 바뀌면 dao도 내용물 바뀜 
 	private MemberDAO memberDAO = new MemberDAOImpl(); //레이어간의 의존관계 형성! 여기서는 싱글톤 방식 사용안함 
 	private AuthenticateService authService = new AuthenticateServiceImpl();
-	
+	PasswordEncoder encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 	
 	@Override
 	public ServiceResult createMember(MemberVO member) {
@@ -30,6 +33,9 @@ public class MemberServiceImpl implements MemberService {
 			result = ServiceResult.PKDUPLICATED; //만약 pk 중복일 경우(=id가 중복일 경우, 기존회원일 경우)
 			
 		} catch (UserNotFoundException e) {
+			String encoded = encoder.encode(member.getMemPass());
+			member.setMemPass(encoded);
+			
 			//2.  id가 없을 경우(신규회원일 경우) => insertMember실행! 
 			int rowcnt = memberDAO.insertMember(member);
 			result = rowcnt > 0 ? ServiceResult.OK : ServiceResult.FAIL; //rowcnt가 0 이상이면 ok출력 아니면 fail 출력 

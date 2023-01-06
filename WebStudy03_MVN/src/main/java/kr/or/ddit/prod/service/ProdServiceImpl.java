@@ -9,10 +9,8 @@ import kr.or.ddit.vo.PagingVO;
 import kr.or.ddit.vo.ProdVO;
 
 public class ProdServiceImpl implements ProdService {
+	private ProdDAO prodDAO = new ProdDAOImpl(); //의존관계 형성
 	
-	
-	private ProdDAO prodDAO = new ProdDAOImpl();
-
 	@Override
 	public ProdVO retrieveProd(String prodId) {
 		
@@ -32,8 +30,6 @@ public class ProdServiceImpl implements ProdService {
 		pagingVO.setDataList(dataList);
 	}
 
-
-
 	//상품 추가 
 	@Override
 	public ServiceResult createProd(ProdVO prod) {
@@ -41,23 +37,13 @@ public class ProdServiceImpl implements ProdService {
 		int rowcnt = prodDAO.insertProd(prod);
 		return rowcnt > 0 ? ServiceResult.OK : ServiceResult.FAIL;
 		
-		
 	}
-
-
 
 	//상품 수정 
 	@Override
 	public ServiceResult modifyProd(ProdVO prod) {
-
-		/*ProdVO inputData = new ProdVO();
-		inputData.setProdId(prod.getProdId());
-		inputData.setProdName(prod.getProdName());
-		*/
-		return null;
+		retrieveProd(prod.getProdId());
+		int rowcnt = prodDAO.updateProd(prod);
+		return rowcnt > 0 ? ServiceResult.OK : ServiceResult.FAIL;
 	}
-
-
-
-
 }

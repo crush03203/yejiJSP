@@ -42,7 +42,6 @@ public class MemberUpdateController {
       
       MemberVO authMember = (MemberVO) session.getAttribute("authMember");
       
-      
       MemberVO member = service.retrieveMember(authMember.getMemId());
       
       req.setAttribute("member", member);
