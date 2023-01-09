@@ -173,9 +173,20 @@ public class BookController {
 	
 	}
 	//글 목록
-	@RequestMapping(value = "list", method=RequestMethod.GET)
-	public ModelAndView list(ModelAndView mav) {
-		List<BookVO> bookVOList = this.bookService.select();
+	// /list?keyword = 검색어
+//	요청 파라미터 : keyword = 검색어
+//				name = value
+//	스프링에서는 요청파라미터를 매개변수로 받을 수 있음 String keyword=> 매개변수임
+//	매개변수 앞에는 요청 파라미터 @RequestParam를 넣어줘야한다
+//	required = false 의 의미는 /list?keyword처럼 요청 파라미터가 없다라도 괜찮다(선택)
+//	예) 맨처음 리스트에 접근할 때, 파라미터가 없어도 괜찮다
+	
+	@RequestMapping(value = "/list", method=RequestMethod.GET)
+	public ModelAndView list(ModelAndView mav, 
+			@RequestParam(value="keyword",required=false)  String keyword) {
+		log.info("keyword : " + keyword);
+		
+		List<BookVO> bookVOList = this.bookService.select(keyword);
 		log.info("bookVOList" + bookVOList);
 	      
 	      // book 폴더의 list.jsp를 해석(list_jsp.java)하고, 컴파일(list_jsp.class).. 서블릿

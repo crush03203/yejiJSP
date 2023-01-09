@@ -18,5 +18,5 @@ public interface BookService {
 	public int delete (BookVO bookVO);
 	
 	//책 목록
-	public List<BookVO> select();
+	public List<BookVO> select(String keyword);
 }

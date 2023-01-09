@@ -75,12 +75,12 @@ public class BookDao {
 	}
 	
 	//책 목록
-	public List<BookVO> select() {
+	public List<BookVO> select(String keyword) {
 		//sqlSessionTemplate : 쿼리 실행객체 
 		//.selectList("namespce명.id")
 		//.selectOne() : 쿼리 실행 결과과가 1행일 경우(단일행)
 		//.selectList() : 쿼리 실행 결과가 2행 이상일 경우(다중행)
-		return this.sqlSessionTemplate.selectList("book.select");
+		return this.sqlSessionTemplate.selectList("book.select",keyword);
 		
 	}
 }

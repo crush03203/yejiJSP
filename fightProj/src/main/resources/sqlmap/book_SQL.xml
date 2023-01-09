@@ -53,11 +53,36 @@ bookVO : BookVO [bookId=2, title=null, category=null, price=null, insertDate=nul
 		]]>
 	</delete>
 	
-<!-- 	책 목록 -->
-	<select id="select" resultType="bookVO">
+<!-- 	책 목록
+	WHERE 1 = 1은 늘 참임
+	조건이 2개 이상일 때 WHERE + AND
+	조건이 1개일 때는 WHERE이어야 함
+	
+	SELECT * FORM BOOK
+	WHERE 조건1(생략 시 => 오류 발생)
+	AND   조건2
+	=> 개선
+	SELECT * FORM BOOK
+	WHERE 1=1 (관습적으로 넣어줌)
+	AND   조건1 (생략 시 => 무관)
+	AND   조건2
+	************중요****************
+	경우1 : 요청 파라미터가 없음 /list
+	경우2 : 요청 파라미터가 있음 /list?keyword=rj검색어
+	
+ -->
+	<select id="select" parameterType="String" resultType="bookVO">
 		SELECT ROW_NUMBER() OVER (ORDER BY INSERT_DATE DESC) RNUM
 	    , BOOK_ID, TITLE, CATEGORY,PRICE,INSERT_DATE
 		FROM BOOK
+		WHERE 1=1
+		<if test="keyword!=null and keyword!=''">
+		AND (
+        		TITLE LIKE '%' || #{keyword}  ||'%'
+        		OR CATEGORY LIKE '%' || #{keyword}  ||'%'
+			)
+		</if>
+		ORDER BY INSERT_DATE DESC
 	</select>
 	
 </mapper>

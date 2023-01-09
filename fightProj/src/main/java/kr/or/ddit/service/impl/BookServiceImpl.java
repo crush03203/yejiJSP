@@ -48,8 +48,8 @@ public class BookServiceImpl implements BookService {
 	
 	//책 목록
 	@Override
-	public List<BookVO> select() {
-		return this.bookDao.select();
+	public List<BookVO> select(String keyword) {
+		return this.bookDao.select(keyword);
 		
 	}
 }
