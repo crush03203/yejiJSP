@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+	<!-- 어디(where, appender), 어떤 형식(how pattern, layout pattern), 뭘(what, message), 
+		누가(who, logger) -->
+	<!-- appender -->
+	<!-- logger -->
+	<!-- layout -->
+	<!-- level : 메시지 이벤트 등급, debug &lt; info &lt; warn &lt; error &lt; fatal -->
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{1.} - %msg%n" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Logger name="jdbc.sqltiming" level="debug" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="jdbc.resultsettable" level="debug"
+			additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="kr.or.ddit" level="info" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="org.springframework" level="info"
+				additivity="false">  <!-- 해당 로거에 대해서만(kr.or.ddit.memo.dao.MemoDAO.selectMemoList) 디버깅 -->
+				<!-- level등급을 info보다 높이면 콘솔창 깨끗하게 출력됨 -->
+				<AppenderRef ref="Console" /> <!-- 콘솔에 출력 additivity="false" : 중복되는 부분은 콘솔창에 출력X -->
+			</Logger>
+		<Root level="error">
+			<AppenderRef ref="Console" />
+			
+		</Root>
+	</Loggers>
+</Configuration>

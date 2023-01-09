@@ -1,0 +1,74 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>kr.or.ddit</groupId>
+  <artifactId>SpringDIContainer</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <properties>
+     <java-version>1.8</java-version>
+   <org.apache.logging.log4j-version>2.19.0</org.apache.logging.log4j-version>
+   <org.slf4j-version>1.7.25</org.slf4j-version>
+   <org.springframework-version>4.3.25.RELEASE</org.springframework-version>
+  </properties>
+     <build>
+      <plugins>
+         <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.10.1</version>
+            <configuration>
+               <source>${java-version}</source>
+               <target>${java-version}</target>
+            </configuration>
+         </plugin>
+      </plugins>
+   </build>
+   
+   
+   
+   <dependencies>
+      <dependency>
+          <groupId>org.springframework</groupId>
+          <artifactId>spring-context</artifactId>
+          <version>${org.springframework-version}</version>
+      </dependency>
+      <!-- JavaBean 규약 지원 -->
+      <dependency>
+         <groupId>org.projectlombok</groupId>
+         <artifactId>lombok</artifactId>
+         <version>1.18.24</version>
+         <scope>provided</scope>
+      </dependency>     
+   
+      <!-- Logging framework -->
+      <dependency>
+         <groupId>org.apache.logging.log4j</groupId>
+         <artifactId>log4j-api</artifactId>
+         <version>${org.apache.logging.log4j-version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.logging.log4j</groupId>
+         <artifactId>log4j-core</artifactId>
+         <version>${org.apache.logging.log4j-version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.apache.logging.log4j</groupId>
+         <artifactId>log4j-slf4j-impl</artifactId>
+         <version>${org.apache.logging.log4j-version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.slf4j</groupId>
+         <artifactId>jcl-over-slf4j</artifactId>
+         <version>${org.slf4j-version}</version>
+      </dependency>
+      <dependency>
+         <groupId>org.lazyluke</groupId>
+         <artifactId>log4jdbc-remix</artifactId>
+         <version>0.2.7</version>
+      </dependency>
+   </dependencies>
+
+
+
+  
+  
+</project>

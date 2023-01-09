@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+
+<!-- 총 10개의 프로퍼티스가 있다 -->
+	<util:properties id="dbInfo" location="classpath:kr/or/ddit/dbInfo.properties">
+		<prop key="key1">value1</prop>
+		<prop key="key2">value2</prop>
+	</util:properties>
+	
+	<bean id="dbInfo1" class="kr.or.ddit.di.DBInfoVO" 
+		p:driverClassName="#{dbInfo['maindb.driverClassName']}"
+		p:url="#{dbInfo['maindb.url']}"
+		p:user="#{dbInfo['maindb.user']}"
+		p:password="#{dbInfo['maindb.password']}"
+		p:initialSize="#{dbInfo.initialSize *3 }"
+		p:maxTotal="#{dbInfo.maxTotal}"
+		p:maxIdle="#{dbInfo.maxIdle}"
+		p:maxWait="#{dbInfo.maxWait}"
+	/>
+	
+<!-- 	기존의 PropertySource에 추가 프로퍼티들을 편입하는 구조 -->
+	<context:property-placeholder  location="classpath:kr/or/ddit/dbInfo.properties"/>
+
+	<bean id="dbInfo2" class="kr.or.ddit.di.DBInfoVO"
+		p:driverClassName="${maindb.driverClassName}"
+		p:url="${maindb.url}"
+		p:user="${maindb.user}"
+		p:password="${maindb.password}"
+		p:initialSize="${initialSize}"
+		p:maxTotal="${maxTotal}"
+		p:maxIdle="${maxIdle}"
+		p:maxWait="${maxWait}"
+	/>
+
+</beans>

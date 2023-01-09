@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:c="http://www.springframework.org/schema/c"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"
+		default-init-method="init"
+		default-destroy-method="destory"
+	>
+
+
+	<!-- various 필요하지 않다면 객체를 생성하지않는다 필요하다면 주입할 때마다 새로운 객체가 생성되어야 한다 -->
+
+	<bean id="vo1" class="kr.or.ddit.di.VariousDIVO"
+		lazy-init="true"
+		scope="prototype"
+		c:number="23"
+		c:flag="true"
+		c:db1Number="23.4"
+		c:ch="A"
+		c:str="STING"
+		
+		c:fileSystemFile="file:D:/contents/images/cat1.jpg"
+		c:classPathFile="classpath:log4j2.xml"
+			
+		/>
+	<bean id="vo2" class="kr.or.ddit.di.VariousDIVO"
+		p:number="#{vo1.number + 30}"
+		p:flag="#{vo1['falg']}"
+		p:db1Number="#{vo1.dblNumber *100}"
+		p:ch="#{vo1['ch']}"
+		p:str="#{vo1.str * 3}"
+		
+		p:fileSystemFile="#{vo1.fileSystemFile}"
+		p:classPathFile="#{vo1['classPathFile']}"
+	/>	
+	
+
+</beans>

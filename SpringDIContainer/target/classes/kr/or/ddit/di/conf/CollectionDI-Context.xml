@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:c="http://www.springframework.org/schema/c"
+   xmlns:p="http://www.springframework.org/schema/p"
+   xmlns:context="http://www.springframework.org/schema/context"
+   xmlns:util="http://www.springframework.org/schema/util"
+   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+      http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd
+      http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.3.xsd">
+   
+   
+   <!--  재활용 가능한 List객체 bean이 등록됨  -->
+   <util:list id="sampleList" list-class="java.util.LinkedList">
+      <value>TEXT</value>
+      <bean class="java.util.Date"></bean> <!--  현재 날짜 오늘 시간  -->
+   </util:list>
+   
+   <!--  재활용 가능한 Set객체 bean이 등록됨  -->
+   <util:set id="sampleSet" value-type="java.lang.String">
+      <value>setValue1</value>
+      <value>setValue2</value>
+   </util:set>
+   
+   <!--  재활용 가능한 Map객체 bean이 등록됨 -->
+   <util:map id="sampleMap" map-class="java.util.LinkedHashMap" key-type="java.lang.String">
+      <entry key="KEY1">
+         <bean class="java.lang.StringBuffer" />
+      </entry>
+      <entry key="KEY2" value="STRVALUE" />
+   </util:map>
+   <util:properties id="props">
+   		<prop key="key1">value1</prop>
+      	<prop key="key2">value2</prop>
+   </util:properties>
+<!--    FactoryBean을 bean으로 등록한 경우,getObject의 반환 객체가 실제 bean 객체로 등록됨  -->
+   <bean id="stringArray" class="kr.or.ddit.di.StringArrayFactoryBean"/>
+   <bean id="colVO4" class="kr.or.ddit.di.CollectionDIVO" 
+   	p:sampleList="#{colVO1.sampleList}"
+   	p:sampleSet="#{colVO2['sampleSet']}"
+   	p:sampleMap="#{colVO3.sampleMap}"
+   	p:props="#{colVO1.props}"
+   	p:array="#{colVO2.array}"
+   />
+   
+   <bean id="colVO3" class="kr.or.ddit.di.CollectionDIVO" 
+      p:sampleList-ref="sampleList"
+      p:sampleSet-ref="sampleSet"
+      p:sampleMap-ref="sampleMap"
+      p:props-ref="props"
+      p:array-ref="stringArray"
+   />
+
+   <bean id="colVO2" class="kr.or.ddit.di.CollectionDIVO"
+      c:sampleList-ref="sampleList"
+      c:sampleSet-ref="sampleSet"
+      c:sampleMap-ref="sampleMap"
+      c:props-ref="props"
+      c:array-ref="stringArray"
+   />
+   <!-- 상단에 이미 등록된 bean이 있기때문에 -ref 사용 -->
+   
+   <!--재활용 불가능  -->
+   <bean id="colVO1" class="kr.or.ddit.di.CollectionDIVO">
+      <constructor-arg name="sampleList">
+         <list>
+            <value>TEXT</value>
+            <bean class="java.util.Date"></bean> <!--  현재 날짜 오늘 시간  -->
+         </list>
+      </constructor-arg>
+      
+      <constructor-arg name="sampleSet">
+         <set>
+            <value>setValue1</value>
+            <value>setValue2</value>
+         </set>
+      </constructor-arg>
+      
+      <constructor-arg name="sampleMap">
+         <map>
+            <entry key="KEY1">
+               <bean class="java.lang.StringBuffer" />
+            </entry>
+            <entry key="KEY2" value="STRVALUE" />
+         </map>
+      </constructor-arg>
+      <constructor-arg name="props">
+      	<props>
+      		<prop key="key1">value1</prop>
+      		<prop key="key2">value2</prop>
+      	</props>
+      </constructor-arg>
+      
+      <constructor-arg name="array">
+      	<array>
+      		<value>element1</value>
+      		<value>element2</value>
+      	</array>
+      </constructor-arg>
+   </bean>
+
+</beans>
