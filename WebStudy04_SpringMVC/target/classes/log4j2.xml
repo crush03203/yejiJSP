@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+
+	<!-- 어디(where, Appenders), 어떤 형식(how pattern, PatternLayout), 뭘(what, message), 
+		누가(who, Loggers) -->
+	<!-- Appenders Loggers PatternLayout -->
+
+	<!-- level : 메시지 이벤트 등급 => debug(모든 메시지 기록) < info(debug는 무시하고 다른 메시지만 기록) 
+		< warn(debug, info등급은 무시하고 그 이상 등급이어야만 기록) < error(왠만해서 완전 심각한 에러 메시지가 아니면 
+		기록 안함) < fatal -->
+	<Appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout
+				pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Logger name="org.springframework" level="info"
+			additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+		<Logger name="jdbc.sqltiming" level="debug" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+
+		<Logger name="jdbc.resultsettable" level="debug"
+			additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>
+
+		<!-- name="kr.or.ddit"에 있는 모든 것들은 level="debug" 똑같이 로 적용됨 -->
+		<Logger name="kr.or.ddit" level="info" additivity="false">  <!-- 해당 로거에 대해서만(kr.or.ddit.memo.dao.MemoDAO.selectMemoList) 디버깅 -->
+			<!-- level등급을 info보다 높이면 콘솔창 깨끗하게 출력됨 -->
+			<AppenderRef ref="Console" /> <!-- 콘솔에 출력 additivity="false" : 중복되는 부분은 콘솔창에 출력X -->
+		</Logger>
+		<Root level="error"> <!-- 불필요한 정보가 너무 많이 나오니까 저 위쪽에 level="info"로 잡아놓으면 왠만한건 위에서 잡고 여기서는(level="error") 
+				저 위쪽에서 못잡아 준걸 잡아줌 -->
+			<AppenderRef ref="Console" /> <!-- 콘솔에 출력 -->
+		</Root>
+	</Loggers>
+</Configuration>
+
+
+
+
+
+
+
+

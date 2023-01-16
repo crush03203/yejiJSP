@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd" >
+
+<!-- dbInfo.properties파일의 설정을 여기로 옮겨온다.   -->
+<configuration>
+	
+	
+	<properties resource="kr/or/ddit/db/dbInfo.properties" />
+	<settings>
+		<setting name="mapUnderscoreToCamelCase" value="true"/> <!--  스네이크를 카멜로 자동으로 바꿔줌  -->
+	</settings>
+	
+	<typeAliases>
+		<package name="kr.or.ddit.vo"/>
+	</typeAliases>
+	
+	<!--  dbInfo.properties 파일 속에 있는 내용들 가져와서 세팅해주기 -->
+	<environments default="dev">
+		<environment id="dev">
+			<transactionManager type="JDBC" /> <!--  -->
+			<dataSource type="POOLED">
+				<property name="driver" value="${driverClassName}"/>
+				<property name="url" value="${url}"/>
+				<property name="username" value="${user}"/>
+				<property name="password" value="${password}"/>
+				<property name="poolMaximumActiveConnections" value="${maxTotal}"/>
+				<property name="poolMaximumIdleConnections" value="${maxIdle}"/> <!-- initialSize이면서 maxIdle역할을 함   -->
+				<property name="poolTimeToWait" value="${maxWait}"/>
+			</dataSource>
+		</environment>
+	</environments>
+	
+	
+	<!-- mabatis > mappers폴더 > xml 로딩  -->
+	<mappers>
+		<mapper resource="kr/or/ddit/mybatis/mappers/Memo.xml"></mapper>
+		<mapper resource="kr/or/ddit/mybatis/mappers/Member.xml"></mapper>
+		<mapper resource="kr/or/ddit/mybatis/mappers/Prod.xml"></mapper>
+		<mapper resource="kr/or/ddit/mybatis/mappers/Others.xml"></mapper>
+	</mappers>
+	
+</configuration>
