@@ -20,13 +20,13 @@
 	    	</if>
 	    </where>
 	</sql>
-	<select id="selectTotalRecord" parameterType="PagingVO" resultType="int">
+	<select id="selectTotalRecord" parameterType="kr.or.ddit.vo.PagingVO" resultType="int">
 		SELECT COUNT(*)
 		FROM FREEBOARD
 		<include refid="searchFrag" />
 	</select>
 	
-	<select id="selectBoardList" parameterType="PagingVO" resultType="BoardVO">
+	<select id="selectBoardList" parameterType="kr.or.ddit.vo.PagingVO" resultType="kr.or.ddit.board.vo.BoardVO">
 		WITH ORDEREDBOARD AS (
 		    SELECT BO_NO, BO_TITLE, BO_WRITER, BO_MAIL
 		           , BO_DATE , BO_HIT
@@ -47,9 +47,9 @@
 		WHERE RNUM BETWEEN #{startRow} AND #{endRow}
 	</select>
 	
-	<resultMap type="BoardVO" id="boardMap" autoMapping="true">
+	<resultMap type="kr.or.ddit.board.vo.BoardVO" id="boardMap" autoMapping="true">
 		<id property="boNo" column="BOARD_NO"/>
-		<collection property="attatchList" ofType="AttatchVO" autoMapping="true" />
+		<collection property="attatchList" ofType="kr.or.ddit.board.vo.AttatchVO" autoMapping="true" />
 	</resultMap>
 	
 	<select id="selectBoard" parameterType="int" resultMap="boardMap">
@@ -71,7 +71,7 @@
 		WHERE BO_NO = #{boNo}
 	</update>
 	
-	<insert id="insertBoard" parameterType="BoardVO">
+	<insert id="insertBoard" parameterType="kr.or.ddit.board.vo.BoardVO">
 		<selectKey order="BEFORE" resultType="int" keyProperty="boNo">
 			SELECT FREEBOARD_SEQ.NEXTVAL
 			FROM DUAL

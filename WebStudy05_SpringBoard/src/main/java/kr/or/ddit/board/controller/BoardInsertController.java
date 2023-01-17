@@ -1,5 +1,7 @@
 package kr.or.ddit.board.controller;
 
+import javax.annotation.PostConstruct;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -15,12 +17,19 @@ import kr.or.ddit.board.service.BoardService;
 import kr.or.ddit.board.vo.BoardVO;
 import kr.or.ddit.validate.InsertGroup;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/board/boardInsert.do")
 public class BoardInsertController {
 	private final BoardService service;
+	
+	@PostConstruct
+	public void init() {
+		log.info("주입된 service 객체 : {}" ,service.getClass().getName());
+	}
 	
 	@ModelAttribute("board")
 	public BoardVO board() {
