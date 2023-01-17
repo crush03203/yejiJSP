@@ -1,109 +1,87 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="kr.or.ddit.prod.dao.ProdDAO">
-
-
-
-
 	<sql id="searchFrag">
 		<trim prefix=" WHERE " prefixOverrides="AND">
-			    <if test="detailCondition neq null">
-			    	<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(detailCondition.prodLgu)">
-			    		AND PROD_LGU = #{detailCondition.prodLgu}
-			    	</if>
-			    	<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(detailCondition.prodBuyer)">
-			    		AND PROD_BUYER = #{detailCondition.prodBuyer}
-			    	</if>
-			    	<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(detailCondition.prodName)">
-			    		AND INSTR(PROD_NAME, #{detailCondition.prodName}) > 0
-			    	</if>
-			    </if>
-		  </trim>	
+		    <if test="detailCondition neq null">
+		    	<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(detailCondition.prodLgu)">
+		    		AND PROD_LGU = #{detailCondition.prodLgu}
+		    	</if>
+		    	<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(detailCondition.prodBuyer)">
+		    		AND PROD_BUYER = #{detailCondition.prodBuyer}
+		    	</if>
+		    	<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(detailCondition.prodName)">
+		    		AND INSTR(PROD_NAME, #{detailCondition.prodName}) > 0
+		    	</if>
+		    </if>
+	    </trim>
 	</sql>
-
-
-	<select id="selectTotalRecord" parameterType="PagingVO" resultType="int">
+	<select id="selectTotalRecord" parameterType="kr.or.ddit.vo.PagingVO" resultType="int">
 		SELECT COUNT(*)
 		FROM PRODVIEW
-		<!-- 상세 검색 조건 만들기   --> 
-		<!--  prefixOverrides="AND" => 무조건 잘못들어간 AND 는 자동으로 삭제 : 셋 중에 하나는 검색안할 수 도 있으니까 일단 AND E다 넣어두고 만약 검색조건 없다면 자동으로 AND 없애주기   -->
 		<include refid="searchFrag" />
-<!-- 		<trim prefix=" WHERE " prefixOverrides="AND">
-			    <if test="detailCondition neq null">
-			    	<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(detailCondition.prodLgu)">
-			    		AND PROD_LGU = #{detailCondition.prodLgu}
-			    	</if>
-			    	<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(detailCondition.prodBuyer)">
-			    		AND PROD_BUYER = #{detailCondition.prodBuyer}
-			    	</if>
-			    	<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(detailCondition.prodName)">
-			    		AND INSTR(PROD_NAME, #{detailCondition.prodName}) > 0
-			    	</if>
-			    </if>
-		  </trim> -->
 	</select>
-
-	<select id="selectProdList" parameterType="PagingVO"   resultType="ProdVO">
+<!-- 	<resultMap type="ProdVO" id="listMap" autoMapping="true"> -->
+<!-- 		<association property="buyer" javaType="BuyerVO"> -->
+<!-- 			<result property="buyerName" column="BUYER_NAME"/> -->
+<!-- 		</association> -->
+<!-- 	</resultMap> -->
+	<select id="selectProdList" parameterType="kr.or.ddit.vo.PagingVO" resultType="kr.or.ddit.vo.ProdVO">
 		WITH ORDEREDPROD AS (
-	    SELECT PROD_ID, PROD_NAME, PROD_COST, PROD_PRICE
-	           , LPROD_NM, BUYER_NAME "buyer.buyerName"
-	           , ( 
-	            SELECT COUNT(DISTINCT CART_MEMBER) FROM CART  
-	            WHERE CART_PROD = PROD_ID
-	           ) MEM_COUNT
+		    SELECT PROD_ID, PROD_NAME, PROD_COST, PROD_PRICE
+		        , LPROD_NM
+		        , BUYER_NAME "buyer.buyerName"
+		        , (
+		            SELECT COUNT(DISTINCT CART_MEMBER) FROM CART
+		            WHERE CART_PROD = PROD_ID
+		        ) MEM_COUNT
 		    FROM PRODVIEW
-		    <!-- 검색조건  -->
-		    <!-- prefixOverrides => sql문에 뭐 하나 잘못 들어갔을 경우 자동으로 삭제 할 수 있음  -->
-		   	<include refid="searchFrag" />
-		    ORDER BY PROD_LGU, ROWID DESC 
+		    <include refid="searchFrag" />
+		    ORDER BY PROD_LGU, ROWID DESC
 		)
 		SELECT A.*
 		FROM (
-		    SELECT ROWNUM RNUM, ORDEREDPROD.*  
+		    SELECT ROWNUM RNUM, ORDEREDPROD.*
 		    FROM ORDEREDPROD
 		) A
 		WHERE RNUM BETWEEN #{startRow} AND #{endRow}
 	</select>
-	
 
-	<!-- resultMap="prodMap" == id="prodMap" -->
-	<resultMap type="ProdVO" id="prodMap" autoMapping="true">
-		<id property="prodId"  column="prod_id" /> 
-		<association property="buyer" javaType="BuyerVO" autoMapping="true"></association><!-- 1:1 => BUYER_NAME,BUYER_ADD1, BUYER_CHARGER를 받을 수 있는 구조 완성 --> 
-		<collection property="memberSet" ofType="MemberVO" autoMapping="true">
-			<id property="memId"  column="MEM_ID" />
-		
+	<resultMap type="kr.or.ddit.vo.ProdVO" id="prodMap" autoMapping="true">
+		<id property="prodId" column="PROD_ID"/>
+		<association property="buyer" javaType="kr.or.ddit.vo.BuyerVO" autoMapping="true" />
+		<collection property="memberSet" ofType="kr.or.ddit.vo.MemberVO" autoMapping="true">
+			<id property="memId" column="MEM_ID"/>
 		</collection>
 	</resultMap>
 
-
 	<select id="selectProd" parameterType="string" resultMap="prodMap">
-	WITH CARTVIEW AS (
-	    SELECT CART_PROD
-	        , MEM_ID, MEM_NAME, MEM_HP, MEM_MAIL, MEM_MILEAGE
-	    FROM CART INNER JOIN MEMBER  ON (CART_MEMBER = MEM_ID)
-	)
-	select 
-	        prod_id,  prod_name,    prod_lgu,
-	        prod_buyer,  prod_cost,  prod_price,   prod_sale,   prod_outline, prod_detail,
-	        prod_img,   prod_totalstock,  prod_insdate,   prod_properstock,  prod_size,  prod_color,   prod_delivery,
-	        prod_unit,  prod_qtyin,   prod_qtysale, prod_mileage,
-	        LPROD_NM,
-	        BUYER_NAME,BUYER_ADD1, BUYER_CHARGER,
-	        CARTVIEW.*
-	from  PRODVIEW LEFT OUTER JOIN CARTVIEW ON (PROD_ID=CART_PROD)
-	WHERE PROD_ID = #{prodId}
+		WITH CARTVIEW AS (
+		    SELECT CART_PROD
+		        , MEM_ID, MEM_NAME, MEM_HP, MEM_MAIL, MEM_MILEAGE
+		    FROM CART INNER JOIN MEMBER ON (CART_MEMBER = MEM_ID)
+		)
+		SELECT
+		    PROD_ID,    PROD_NAME,    PROD_LGU,
+		    PROD_BUYER,    PROD_COST,    PROD_PRICE,
+		    PROD_SALE,    PROD_OUTLINE,    PROD_DETAIL,
+		    PROD_IMG,    PROD_TOTALSTOCK,    
+		    TO_CHAR(PROD_INSDATE, 'YYYY-MM-DD') PROD_INSDATE,
+		    PROD_PROPERSTOCK,    PROD_SIZE,    PROD_COLOR,
+		    PROD_DELIVERY,    PROD_UNIT,    PROD_QTYIN,
+		    PROD_QTYSALE,    PROD_MILEAGE
+		    , LPROD_NM
+		    , BUYER_NAME, BUYER_ADD1, BUYER_CHARGER
+		    , CARTVIEW.*
+		FROM   PRODVIEW LEFT OUTER JOIN CARTVIEW ON (PROD_ID = CART_PROD)
+		WHERE PROD_ID = #{prodId}
 	</select>
-	
-	
-
-	<!--  신규상품 등록  -->
-	<insert id="insertProd" parameterType="ProdVO">
-		<selectKey order="BEFORE" resultType="string" keyProperty="prodId"><!-- //insert문을 실행하기 전에 이걸 먼저 실행해서 비어져있던 prodVO에있는 setprodId가 채워짐  -->
-			SELECT #{prodLgu,jdbcType=CHAR} || 
-		    	LPAD((NVL(TO_NUMBER(SUBSTR(MAX(PROD_ID),5)),0)+1), 6, '0')
+	<insert id="insertProd" parameterType="kr.or.ddit.vo.ProdVO">
+		<selectKey order="BEFORE" resultType="string" keyProperty="prodId">
+			SELECT #{prodLgu,jdbcType=CHAR}||
+		    	LPAD(NVL(TO_NUMBER(SUBSTR(MAX(PROD_ID), 5)), 0)+1, 6, '0')
 		    FROM PROD
-			WHERE PROD_LGU = #{prodLgu,jdbcType=CHAR}
+			WHERE PROD_LGU = #{prodLgu,jdbcType=CHAR}	
 		</selectKey>
 		INSERT INTO PROD(
 			PROD_ID
@@ -125,10 +103,10 @@
 			, PROD_UNIT
 			, PROD_QTYIN
 			, PROD_QTYSALE
-			, PROD_MILEAGE 
+			, PROD_MILEAGE
 		)VALUES(
-		    #{prodId}
-			, #{prodName,jdbcType=VARCHAR}
+			#{prodId}
+		    , #{prodName,jdbcType=VARCHAR}
 			, #{prodLgu,jdbcType=CHAR}
 			, #{prodBuyer,jdbcType=CHAR}
 			, #{prodCost,jdbcType=NUMERIC}
@@ -138,7 +116,7 @@
 			, #{prodDetail,jdbcType=CLOB}
 			, #{prodImg,jdbcType=VARCHAR}
 			, #{prodTotalstock,jdbcType=NUMERIC}
-			, #{prodInsdate,jdbcType=DATE}
+			, TO_DATE(#{prodInsdate,jdbcType=DATE}, 'YYYY-MM-DD')
 			, #{prodProperstock,jdbcType=NUMERIC}
 			, #{prodSize,jdbcType=VARCHAR}
 			, #{prodColor,jdbcType=VARCHAR}
@@ -148,61 +126,44 @@
 			, #{prodQtysale,jdbcType=NUMERIC}
 			, #{prodMileage,jdbcType=NUMERIC}
 		)
-   </insert>
-
-	
-	
-	
-	<update id="updateProd" parameterType="ProdVO">
-	UPDATE PROD
-	SET 
-	      PROD_ID=#{prodId,jdbcType=VARCHAR}
-         , PROD_NAME=#{prodName,jdbcType=VARCHAR}
-         , PROD_LGU=#{prodLgu,jdbcType=CHAR}
-         , PROD_BUYER=#{prodBuyer,jdbcType=CHAR}
-         , PROD_COST=#{prodCost,jdbcType=NUMERIC}
-         , PROD_PRICE=#{prodPrice,jdbcType=NUMERIC}
-         , PROD_SALE=#{prodSale,jdbcType=NUMERIC}
-         , PROD_OUTLINE=#{prodOutline,jdbcType=VARCHAR}
-        
-         , PROD_DETAIL=#{prodDetail,jdbcType=CLOB}
-         , PROD_TOTALSTOCK=#{prodTotalstock,jdbcType=NUMERIC}
-         , PROD_INSDATE=#{prodInsdate,jdbcType=DATE}
-         , PROD_PROPERSTOCK=#{prodProperstock,jdbcType=NUMERIC}
-         , PROD_SIZE=#{prodSize,jdbcType=VARCHAR}
-         , PROD_COLOR=#{prodColor,jdbcType=VARCHAR}
-         , PROD_DELIVERY=#{prodDelivery,jdbcType=VARCHAR}
-         , PROD_UNIT=#{prodUnit,jdbcType=VARCHAR}
-         , PROD_QTYIN=#{prodQtyin,jdbcType=NUMERIC}
-         , PROD_QTYSALE=#{prodQtysale,jdbcType=NUMERIC}
-         , PROD_MILEAGE=#{prodMileage,jdbcType=NUMERIC}
-	<if test="prodImg neq null and prodImg.length gt 0">			
-		, PROD_IMG = #{prodImg, jdbcType=BLOB} <!-- 이미지 수정 -->
-	</if>
-	
-	WHERE PROD_ID = #{prodId}
-	
+	</insert>
+	<update id="updateProd" parameterType="kr.or.ddit.vo.ProdVO">
+		UPDATE PROD
+		SET
+			PROD_COST = #{prodCost,jdbcType=NUMERIC}
+			, PROD_PRICE = #{prodPrice,jdbcType=NUMERIC}
+			, PROD_SALE = #{prodSale,jdbcType=NUMERIC}
+			, PROD_OUTLINE = #{prodOutline,jdbcType=VARCHAR}
+			, PROD_DETAIL = #{prodDetail,jdbcType=CLOB}
+			, PROD_TOTALSTOCK = #{prodTotalstock,jdbcType=NUMERIC}
+			, PROD_INSDATE = TO_DATE(#{prodInsdate,jdbcType=DATE}, 'YYYY-MM-DD')
+			, PROD_PROPERSTOCK = #{prodProperstock,jdbcType=NUMERIC}
+			, PROD_SIZE = #{prodSize,jdbcType=VARCHAR}
+			, PROD_COLOR = #{prodColor,jdbcType=VARCHAR}
+			, PROD_DELIVERY = #{prodDelivery,jdbcType=VARCHAR}
+			, PROD_UNIT = #{prodUnit,jdbcType=VARCHAR}
+			, PROD_QTYIN = #{prodQtyin,jdbcType=NUMERIC}
+			, PROD_QTYSALE = #{prodQtysale,jdbcType=NUMERIC}
+			, PROD_MILEAGE = #{prodMileage,jdbcType=NUMERIC}
+			<if test="@org.apache.commons.lang3.StringUtils@isNotBlank(prodImg)">
+			, PROD_IMG = #{prodImg,jdbcType=VARCHAR}
+			</if>
+		WHERE PROD_ID = #{prodId,jdbcType=VARCHAR}
 	</update>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

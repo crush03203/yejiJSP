@@ -8,8 +8,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SearchVO {
-
 	private String searchType;
 	private String searchWord;
-	
 }

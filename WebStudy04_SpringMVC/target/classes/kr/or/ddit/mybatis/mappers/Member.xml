@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="kr.or.ddit.member.dao.MemberDAO"> <!--  interface 퀄리파이드네임 필요  -->
-
-	<!--  코드 플레그먼트 
-	전체 코드를 가지고이있는게 아니라 코드 의 일부분을가지고있는 것 
-	같은 코드를 여러곳에서 쓰는데 하나 수정하면 또 수정하고 그러는게 귀찮으니까 모듈화 시켜서 이걸 include시키면 편함
-	<include refid="searchFrag" />
-	-->
+<mapper namespace="kr.or.ddit.member.dao.MemberDAO">
 	<sql id="searchFrag">
-		<where> 
-			<!-- <if test="simpleCondition neq null and simpleCondition.searchWord neq null"> --> <!-- neq null : simpleCondition와 simpleCondition.searchWord가 null이 아니면 -->
-			<if test="simpleCondition neq null and @org.apache.commons.lang3.StringUtils@isNotBlank(simpleCondition.searchWord)"> <!-- null체킹 뿐만아니라 실제 데이터가 있는지까지 확인 할 수 있음   -->	
+		<where>
+			<if test="simpleCondition neq null and @org.apache.commons.lang3.StringUtils@isNotBlank(simpleCondition.searchWord)">
 				<choose>
 					<when test="simpleCondition.searchType eq 'name'">
-						INSTR(MEM_NAME, #{simpleCondition.searchWord}) > 0 <!--MEM_NAME에   '은대'라는 글자가 포함되어있으면 -->
+						INSTR(MEM_NAME, #{simpleCondition.searchWord}) > 0
 					</when>
 					<when test="simpleCondition.searchType eq 'address'">
-						INSTR(MEM_ADD1, #{simpleCondition.searchWord}) > 0 <!--MEM_ADD1에  주소가 포함되어있으면 -->
+						INSTR(MEM_ADD1, #{simpleCondition.searchWord}) > 0
 					</when>
 					<otherwise>
 						INSTR(MEM_NAME, #{simpleCondition.searchWord}) > 0
@@ -25,253 +18,159 @@
 					</otherwise>
 				</choose>
 			</if>
-		</where>
+		 </where>
 	</sql>
 
-
-
-	<!-- 페이징  -->
-	<select id="selectTotalRecord" resultType="int" parameterType="PagingVO">
+	<select id="selectTotalRecord" resultType="int" parameterType="kr.or.ddit.vo.PagingVO">
 		SELECT COUNT(*)
 		FROM MEMBER
-		<include refid="searchFrag" />
-		<!-- 은대만 검색했을때  결과는 하나만 나오는데 페이지수가 여러개 나오는 오류수정  -->
-<!--		<where> 
-			<if test="simpleCondition neq null and simpleCondition.searchWord neq null"> neq null : simpleCondition와 simpleCondition.searchWord가 null이 아니면
-			<if test="simpleCondition neq null and @org.apache.commons.lang3.StringUtils@isNotBlank(simpleCondition.searchWord)"> null체킹 뿐만아니라 실제 데이터가 있는지까지 확인 할 수 있음  	
-				<choose>
-					<when test="simpleCondition.searchType eq 'name'">
-						INSTR(MEM_NAME, #{simpleCondition.searchWord}) > 0 MEM_NAME에   '은대'라는 글자가 포함되어있으면
-					</when>
-					<when test="simpleCondition.searchType eq 'address'">
-						INSTR(MEM_ADD1, #{simpleCondition.searchWord}) > 0 MEM_ADD1에  주소가 포함되어있으면
-					</when>
-					<otherwise>
-						INSTR(MEM_NAME, #{simpleCondition.searchWord}) > 0
-						OR
-						INSTR(MEM_ADD1, #{simpleCondition.searchWord}) > 0
-					</otherwise>
-				</choose>
-			</if>
-		</where> -->
+		<include refid="searchFrag" /> 
 	</select>
 
-
-
-<!-- select했을 때 데이터가 출력 안됐던 이유  -->
-<!-- resultMap => mem_id : 카멜케이스 인식 안되기 때문에 자동으로 오토바인딩이 되어버리기때문에 setMem_id (이러한 것은 vo에 없음 )호출하게 됨  -->
-<!--  resultMap="memberMap" => 오토 말고 이제 수동으로 하겠다  -->
-<!-- 	<resultMap type="memberVO" id="memberMap">
-		<result property="memId" column="MEM_ID" /> 스네이크를 카멜로 바꾸겠다 
-	</resultMap>
-	
-	<select id="selectMemberList" resultMap="memberMap">
-		SELECT  mem_id, MEM_NAME, MEM_MAIL, MEM_HP,  MEM_ADD1, MEM_ADD2, MEM_MILEAGE
-		FROM   member 
-	</select> -->
-	
-	
-	<!-- 	config.xml
-	<settings>
-		<setting name="mapUnderscoreToCamelCase" value="true"/>  스네이크를 카멜로 자동으로 바꿔줌 
-	</settings> -->
-	
-	<select id="selectMemberList" resultType="MemberVO" parameterType="PagingVO">
-		
-	    
-	    SELECT B.*
-	    FROM (
-		    SELECT  A.*, ROWNUM RNUM
-		    FROM (
-	
-				<!--  구매건수 출력  -->
-				WITH CARTVIEW AS (
-				    SELECT CART_MEMBER, COUNT(DISTINCT CART_PROD) CART_COUNT
-				    FROM CART
-				    GROUP BY CART_MEMBER
-				)
-				SELECT mem_id, MEM_NAME, MEM_MAIL, MEM_HP,  MEM_ADD1, MEM_ADD2, MEM_MILEAGE,
-				       (
-					         SELECT COUNT(DISTINCT CART_PROD)
-					         FROM CART
-					         WHERE CART_MEMBER = MEM_ID
-					      ) CART_COUNT
-				FROM MEMBER 
-				<!-- WHERE INSTR(MEM_NAME, '은대') > 0  -->   <!--조건절은 INLINEVIEW를 대상으로 해서 넣을수 없음   / WHERE MEM_NAME LIKE '%은대%' 이 방식보다 INSTR을 쓰는게 훨나음   -->
-				<include refid="searchFrag" />
-				<!-- <where> 검색을 해서 파라미터값이 들어갔을때만 (if문을 타면) WHERE 절 실행  : WHERE INSTR(MEM_NAME, '은대') > 0 ORDER BY ROWID DESC ) A ) 
-					<if test="simpleCondition neq null and simpleCondition.searchWord neq null"> neq null : simpleCondition와 simpleCondition.searchWord가 null이 아니면
-						<choose>
-							<when test="simpleCondition.searchType eq 'name'">
-								INSTR(MEM_NAME, #{simpleCondition.searchWord}) > 0 MEM_NAME에   '은대'라는 글자가 포함되어있으면
-							</when>
-							<when test="simpleCondition.searchType eq 'address'">
-								INSTR(MEM_ADD1, #{simpleCondition.searchWord}) > 0 MEM_ADD1에  주소가 포함되어있으면
-							</when>
-							<otherwise>
-								INSTR(MEM_NAME, #{simpleCondition.searchWord}) > 0
-								OR
-								INSTR(MEM_ADD1, #{simpleCondition.searchWord}) > 0
-							</otherwise>
-						</choose>
-					</if>
-				</where> -->
-				ORDER BY ROWID DESC
-			) A
-		) B
-		
-		<!-- :CDATA  <= 이런기호 사용할 수 있게 만들어줌 -->
-		<![CDATA[
-		WHERE  RNUM >= #{startRow} AND RNUM <= #{endRow}
-		]]>
-		
-		
-		
+	<select id="selectMemberList" resultType="kr.or.ddit.vo.MemberVO" parameterType="kr.or.ddit.vo.PagingVO">
+		SELECT B.*
+		FROM (
+			SELECT A.*, ROWNUM RNUM
+			FROM (
+				 SELECT MEM_ID, MEM_NAME, MEM_MAIL, MEM_HP    
+				 	, MEM_ADD1, MEM_MILEAGE   
+				 	, (SELECT COUNT(DISTINCT CART_PROD) 
+				 		FROM CART 
+				 		WHERE CART_MEMBER = MEM_ID)  CART_COUNT              
+				 FROM MEMBER   
+				 <include refid="searchFrag" />
+				 ORDER BY ROWID DESC   
+			 ) A    
+		 ) B      
+		 <![CDATA[
+		 	WHERE RNUM >= #{startRow} AND RNUM <= #{endRow}
+		 ]]>                  
 	</select>
 	
-	
-	<!--
-	1 : 다 => 주데이터 가지고있는애가 1
-	거래처정보 상세조회 거래처의 거래품목까지 조회 = > 메인테이블 buyer(1) :  prod(다)
-	-->
-	
-	
-	<!-- resultType="MemberVO" => MEMBERVO만 받을수있는데 조인하는 순간 TYPE 바꿔줘야됨  -->
-	<!--  private List<ProdVO> prod;에 추가하고 => memberVO  -->
-	<!--  resultType을 resultMap="memberMap" 으로 변경-->
-	<!--  
-		<resultMap type="MemberVO" id="memberMap" autoMapping="true"> autoMapping="true"추가하면 기본적이고 당연한 설정 필요 없음 
-			<result property="memName" column="mem_name"  /> memName이 프로퍼티의 데이터 값을 가져오겠다 
-			<result property="memPass" column="mem_pass"  /> 
-		</resultMap>
-		
-		<id property="memId" column="MEM_ID" />
-		
-		하지만 memberVO안에 prod, buyer(다른 vo)가 들어있다? 그럼 따로 설정해줘야됨   collection으로 
-		<collection property="ProdList" ofType="ProdVO" autoMapping="true" />
-			<result property="prodName" column="PROD_NAME" />		
-		</collection>
-	</resultMap> -->
-	
-	<resultMap type="MemberVO" id="memberMap" autoMapping="true">
-		<id property="memId" column="MEM_ID" />
-		<collection property="prodList" ofType="ProdVO" autoMapping="true">
-			<association property="buyer" javaType="BuyerVO" autoMapping="true">
-			</association>
+	<resultMap type="kr.or.ddit.vo.MemberVO" id="memberMap" autoMapping="true">
+		<id property="memId" column="MEM_ID"/>
+		<collection property="prodList" ofType="kr.or.ddit.vo.ProdVO" autoMapping="true">
+			<association property="buyer" javaType="kr.or.ddit.vo.BuyerVO" autoMapping="true" />
 		</collection>
 	</resultMap>
 	
-	<select id="selectMember" parameterType="string" resultMap="memberMap">		
+	<select id="selectMember" parameterType="string" resultMap="memberMap">
 		WITH CARTVIEW AS (
 			SELECT DISTINCT CART_MEMBER, CART_PROD
-			FROM CART 
+			FROM CART
 		), CARTPROD AS (
 			SELECT CART_MEMBER
-			 	   , PRODVIEW.*
-			FROM CARTVIEW INNER JOIN PRODVIEW ON (CART_PROD = PROD_ID) 
+				, PRODVIEW.*
+			FROM CARTVIEW INNER JOIN PRODVIEW ON (CART_PROD = PROD_ID)
 		)
-		
-		SELECT 
-	    mem_id, mem_pass,  mem_name,                                 
-	    mem_regno1,mem_regno2,                                       
-	    to_char(mem_bir, 'YYYY-MM-DD') mem_bir,                      
-	    mem_zip, mem_add1,  mem_add2,                                
-	    mem_hometel, mem_comtel,  mem_hp,                            
-	    mem_mail, mem_job, mem_like,                                 
-	    mem_memorial,                                                
-	    to_char(mem_memorialday, 'YYYY-MM-DD') mem_memorialday,      
-	    mem_mileage,  mem_delete,MEM_ROLE, MEM_IMG
-	    , PROD_ID, PROD_NAME, PROD_COST, PROD_PRICE, PROD_MILEAGE  <!-- PRODVO  -->
-	    , LPROD_NM
-	    , BUYER_NAME, BUYER_ADD1, BUYER_CHARGER                                   
-		FROM                                                         
-		    member  LEFT OUTER JOIN  CARTPROD  ON (MEM_ID = CART_MEMBER)  <!-- 한번도 구매한적 없는 사람도 로그인은 할수있어야 됨 => 차집합 -->                             
-		where mem_id = #{memId}  
+		SELECT                                                        
+		    MEM_ID,    MEM_PASS,    MEM_NAME,                         
+		    MEM_REGNO1,    MEM_REGNO2,                                
+		    TO_CHAR(MEM_BIR, 'YYYY-MM-DD') MEM_BIR,                   
+		    MEM_ZIP,    MEM_ADD1,    MEM_ADD2,                        
+		    MEM_HOMETEL,    MEM_COMTEL,    MEM_HP,                    
+		    MEM_MAIL,    MEM_JOB,    MEM_LIKE,                        
+		    MEM_MEMORIAL,                                             
+		    TO_CHAR(MEM_MEMORIALDAY, 'YYYY-MM-DD') MEM_MEMORIALDAY,   
+		    MEM_MILEAGE,                                              
+		    MEM_DELETE   
+		    , MEM_ROLE  
+		    , MEM_IMG 
+		    , PROD_ID, PROD_NAME, PROD_COST, PROD_PRICE, PROD_MILEAGE
+		    , LPROD_NM
+		    , BUYER_NAME , BUYER_ADD1, BUYER_CHARGER                                         
+		FROM    MEMBER  LEFT OUTER JOIN  CARTPROD  ON (MEM_ID = CART_MEMBER)                               
+		WHERE MEM_ID = #{memId}                                              
 	</select>
 	
-	<insert id="insertMember" parameterType="MemberVO">
-		INSERT INTO MEMBER(
-			 MEM_ID
-			,MEM_PASS
-			,MEM_NAME
-			,MEM_REGNO1
-			,MEM_REGNO2
-			,MEM_BIR
-			,MEM_ZIP
-			,MEM_ADD1
-			,MEM_ADD2
-			,MEM_HOMETEL
-			,MEM_COMTEL
-			,MEM_HP
-			,MEM_MAIL
-			,MEM_JOB
-			,MEM_LIKE
-			,MEM_MEMORIAL
-			,MEM_MEMORIALDAY
+	<insert id="insertMember" parameterType="kr.or.ddit.vo.MemberVO">
+		INSERT INTO MEMBER (
+		    MEM_ID
+		    , MEM_PASS
+		    , MEM_NAME
+		    , MEM_REGNO1
+		    , MEM_REGNO2
+		    , MEM_BIR
+		    , MEM_ZIP
+		    , MEM_ADD1
+		    , MEM_ADD2
+		    , MEM_HOMETEL
+		    , MEM_COMTEL
+		    , MEM_HP
+		    , MEM_MAIL
+		    , MEM_JOB
+		    , MEM_LIKE
+		    , MEM_MEMORIAL
+		    , MEM_MEMORIALDAY
+		    <if test="memImg neq null and memImg.length gt 0">
+		    , MEM_IMG
+		    </if>
+		) VALUES (
+			#{memId,jdbcType=VARCHAR}
+			, #{memPass,jdbcType=VARCHAR}
+			, #{memName,jdbcType=VARCHAR}
+			, #{memRegno1,jdbcType=CHAR}
+			, #{memRegno2,jdbcType=CHAR}
+			, TO_DATE(#{memBir,jdbcType=DATE}, 'YYYY-MM-DD')
+			, #{memZip,jdbcType=CHAR}
+			, #{memAdd1,jdbcType=VARCHAR}
+			, #{memAdd2,jdbcType=VARCHAR}
+			, #{memHometel,jdbcType=VARCHAR}
+			, #{memComtel,jdbcType=VARCHAR}
+			, #{memHp,jdbcType=VARCHAR}
+			, #{memMail,jdbcType=VARCHAR}
+			, #{memJob,jdbcType=VARCHAR}
+			, #{memLike,jdbcType=VARCHAR}
+			, #{memMemorial,jdbcType=VARCHAR}
+			, TO_DATE(#{memMemorialday,jdbcType=DATE}, 'YYYY-MM-DD')
 			<if test="memImg neq null and memImg.length gt 0">
-			,MEM_IMG
-			</if>
-		)VALUES(
-			#{memId, jdbcType=VARCHAR}
-			, #{memPass, jdbcType=VARCHAR}
-			, #{memName, jdbcType=VARCHAR}
-			, #{memRegno1, jdbcType=CHAR}
-			, #{memRegno2, jdbcType=CHAR}
-			, TO_DATE(#{memBir, jdbcType=DATE}, 'YYYY-MM-DD')
-			, #{memZip, jdbcType=CHAR}
-			, #{memAdd1, jdbcType=VARCHAR}
-			, #{memAdd2, jdbcType=VARCHAR}
-			, #{memHometel, jdbcType=VARCHAR}
-			, #{memComtel, jdbcType=VARCHAR}
-			, #{memHp, jdbcType=VARCHAR}
-			, #{memMail, jdbcType=VARCHAR}
-			, #{memJob, jdbcType=VARCHAR}
-			, #{memLike, jdbcType=VARCHAR}
-			, #{memMemorial, jdbcType=VARCHAR}
-			, TO_DATE(#{memMemorialday, jdbcType=DATE}, 'YYYY-MM-DD')
-			<if test="memImg neq null and memImg.length gt 0">
-			,#{memImg, jdbcType=BLOB}
-			</if>
+		    , #{memImg,jdbcType=BLOB}
+		    </if>
 		)
 	</insert>
-	
-	<!-- 이름, 아이디, 마일리지 등은 사용자가 임의로 수정불가하기 때문에 작성할 필요x -->
-	<update id="updateMember" parameterType="MemberVO">
-	
-		update member 
-		set    
-			MEM_REGNO1 = #{memRegno1, jdbcType=CHAR}
-			, MEM_REGNO2 = #{memRegno2, jdbcType=CHAR}
-			, MEM_ZIP = #{memZip, jdbcType=CHAR}
-			, MEM_ADD1 = #{memAdd1, jdbcType=VARCHAR}
-			, MEM_ADD2 = #{memAdd2, jdbcType=VARCHAR}
-			, MEM_HOMETEL = #{memHometel, jdbcType=VARCHAR}
-			, MEM_COMTEL = #{memComtel, jdbcType=VARCHAR}
-			, MEM_HP = #{memHp, jdbcType=VARCHAR}
-			, MEM_MAIL = #{memMail, jdbcType=VARCHAR}
-			, MEM_JOB = #{memJob, jdbcType=VARCHAR}
-			, MEM_LIKE = #{memLike, jdbcType=VARCHAR}
-			, MEM_MEMORIAL = #{memMemorial, jdbcType=VARCHAR}
-			, MEM_MEMORIALDAY = TO_DATE(#{memMemorialday, jdbcType=DATE},'YYYY-MM-DD')
-			<if test="memImg neq null and memImg.length gt 0">			
-			, MEM_IMG = #{memImg, jdbcType=BLOB} <!-- 이미지 수정 -->
-			</if>
-		WHERE MEM_ID = #{memId}
-
-	</update>
-	
-	
-	
-	
-	<delete id="deleteMember" parameterType="string">
-		<!-- DELETE FROM MEMBER
-		WHERE MEM_ID = #{noname} -->
-		<!-- 실제로 데이터를 삭제하는게 아니라 MEM_DELETE 컬럼데이터를 1로 바꿔준다.  -->
+	<update id="updateMember" parameterType="kr.or.ddit.vo.MemberVO">
 		UPDATE MEMBER
 		SET
-		MEM_DELETE  = '1' 
+			MEM_REGNO1 = #{memRegno1,jdbcType=CHAR}
+			, MEM_REGNO2 = #{memRegno2,jdbcType=CHAR}
+			, MEM_ZIP = #{memZip,jdbcType=CHAR}
+			, MEM_ADD1 = #{memAdd1,jdbcType=VARCHAR}
+			, MEM_ADD2 = #{memAdd2,jdbcType=VARCHAR}
+			, MEM_HOMETEL = #{memHometel,jdbcType=VARCHAR}
+			, MEM_COMTEL = #{memComtel,jdbcType=VARCHAR}
+			, MEM_HP = #{memHp,jdbcType=VARCHAR}
+			, MEM_MAIL = #{memMail,jdbcType=VARCHAR}
+			, MEM_JOB = #{memJob,jdbcType=VARCHAR}
+			, MEM_LIKE = #{memLike,jdbcType=VARCHAR}
+			, MEM_MEMORIAL = #{memMemorial,jdbcType=VARCHAR}
+			, MEM_MEMORIALDAY = TO_DATE(#{memMemorialday,jdbcType=DATE}, 'YYYY-MM-DD')
+			<if test="memImg neq null and memImg.length gt 0">
+			, MEM_IMG = #{memImg,jdbcType=BLOB}
+			</if>
+		WHERE MEM_ID = #{memId}
+	</update>
+	
+	<delete id="deleteMember" parameterType="string">
+		UPDATE MEMBER
+		SET
+		MEM_DELETE = '1'
 		WHERE MEM_ID = #{noname}
 	</delete>
-	
-
 </mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
