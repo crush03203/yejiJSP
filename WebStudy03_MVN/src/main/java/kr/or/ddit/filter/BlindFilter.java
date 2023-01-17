@@ -10,16 +10,13 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 import lombok.extern.slf4j.Slf4j;
-
 
 @Slf4j
 public class BlindFilter implements Filter {
 	
-	private Map<String, String> blindMap;
+	private Map<String, String> blindMap; //blindMap을 선언해 줌
 
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {
@@ -39,7 +36,6 @@ public class BlindFilter implements Filter {
 		log.info("blind filter 동작시작");
 		
 	    /*  
-	   
 	    // 1클라이언트 ip 주소 필요
       	// 2ip 주소를 기준으로 대상자인지 확인
       	// 3대상자가 아니라면 서비스 이용
@@ -69,7 +65,4 @@ public class BlindFilter implements Filter {
 		log.info("{} 소멸", this.getClass().getName());
 		
 	}
-
-	
-	
 }

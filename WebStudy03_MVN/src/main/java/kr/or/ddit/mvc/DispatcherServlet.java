@@ -16,21 +16,21 @@ import kr.or.ddit.mvc.annotation.RequestMappingInfo;
 import kr.or.ddit.mvc.view.InternalResourceViewResolver;
 import kr.or.ddit.mvc.view.ViewResolver;
 
-//컨트롤러에서 반복적으로 사용되던 걸 피하기 위해서 
+//컨트롤러에서 반복적으로 사용되던 걸 피하기 위해
 //이제 서블릿은 front controller만 가지고있으면 됨 
-//나머지 컨트롤러에는 서블릿 더이상 필요없어짐 
+//나머지 컨트롤러에는 서블릿 더이상 필요없어짐 , extends는 Servlet만 
 public class DispatcherServlet extends HttpServlet{
-
-	private ViewResolver viewResolver;
+//DispatcherServlet에서  handlerMapping,handlerAdapter,viewResolver
 	private HandlerMapping handlerMapping;
 	private HandlerAdapter handlerAdapter;
+	private ViewResolver viewResolver; 
 	
 	@Override
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-		viewResolver = new InternalResourceViewResolver("/WEB-INF/views/",".jsp");
 		handlerMapping = new RequestMappingHandlerMapping("kr.or.ddit");
 		handlerAdapter = new RequestMappingHandlerAdapter();
+		viewResolver = new InternalResourceViewResolver("/WEB-INF/views/",".jsp");
 	}
 	
 	@Override
@@ -42,9 +42,6 @@ public class DispatcherServlet extends HttpServlet{
 
 		//이것들을 handlermapping으로 넘겼음 
 		RequestMappingInfo mappingInfo = handlerMapping.findCommandHandler(req); 
-/*		else if("/prod/prodInsert.do".equals(requestURI)) {
-			controller = new ProdInsertController();
-		}*/
 		if(mappingInfo==null) { //컨트롤러를 찾을수 없다면 
 			resp.sendError(404,requestURI+" 는 처리할 수 없는 자원임(Not found)");
 			return;

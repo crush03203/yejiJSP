@@ -26,6 +26,7 @@
 		<filter-name>CharacterEncodingFilter</filter-name>
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
+	
 	<!-- filter   : 필터를 통해서는 핵심기능을 구현하면 안됨 -->
 	<!--  순서대로 필터링됨  
 	요청필터링 순서 :BlindFilter => DummyFilter 
@@ -74,10 +75,7 @@
        <filter-name>MultipartFilter</filter-name>
        <url-pattern>/*</url-pattern>
     </filter-mapping>
- 	
 
- 
- 
 	<!-- frontController   -->
 	<servlet>
 		<servlet-name>frontController</servlet-name>
@@ -93,10 +91,4 @@
 		<url-pattern>/memo/*</url-pattern> 
 		<url-pattern>/index.do</url-pattern>
 	</servlet-mapping>
-	
-	
-	
-	
-	
-	
 </web-app>

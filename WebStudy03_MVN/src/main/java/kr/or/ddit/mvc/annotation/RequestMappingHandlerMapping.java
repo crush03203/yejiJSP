@@ -13,13 +13,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class RequestMappingHandlerMapping implements HandlerMapping {
-   private Map<RequestMappingCondition, RequestMappingInfo> handlerMap;
+   private Map<RequestMappingCondition, RequestMappingInfo> handlerMap;// @Controller인 애들을 모아놓은 맵이다.
    
    
-   public RequestMappingHandlerMapping (String...basePackages) {
+   public RequestMappingHandlerMapping (String...basePackages) { // 위레 맵을 만드는 해동
       //여기서 최종적으로 Map<RequestMappingCondition, RequestMappinginfo> handlerMap 만들어야한다 
       handlerMap = new LinkedHashMap<>();
-      scanBasePackages(basePackages);
+      scanBasePackages(basePackages); // 그 범위에서 @controller 붙은 것만 찾으라는 것
    }
    
    private void scanBasePackages(String[] basePackages) {

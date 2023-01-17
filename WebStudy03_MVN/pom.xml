@@ -127,7 +127,6 @@
 			<scope>provided</scope> <!-- 개발할때는 사용, 배포할때는 버리고 감 -->
 		</dependency>
 
-
 		<!-- Marshalling -->
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>

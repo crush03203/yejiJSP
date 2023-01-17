@@ -45,7 +45,7 @@ public class GeneratePrincipalFilter implements Filter {
 					return new MemberVOWrapper(realMember);
 				}
 			};
-			chain.doFilter(modifedReq, response);
+			chain.doFilter(modifedReq, response);//다음 필터
 			
 		}else { //일반유저일 경우 
 			chain.doFilter(request, response); //아무것도 안하고 통과시키면됨
