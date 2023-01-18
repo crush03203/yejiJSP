@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.memo.dao.MemoDAO">
+	<select id="selectMemoList" resultType="kr.or.ddit.vo.MemoVO">
+		 SELECT  code, writer, content, "DATE"
+		 FROM   tbl_memo                        
+	</select>
+	<insert id="insertMemo" parameterType="kr.or.ddit.vo.MemoVO">
+		INSERT INTO tbl_memo (           
+			 code,    writer,    content 
+		)VALUES( 
+			MEMO_SEQ.NEXTVAL , #{writer} , #{content}
+		)
+	</insert>
+	<update id="updateMemo" parameterType="kr.or.ddit.vo.MemoVO">
+		UPDATE tbl_memo  
+		SET              
+		WRITER = #{writer},      
+		CONTENT = #{content}      
+		WHERE CODE = #{code}   
+	</update>
+	<delete id="deleteMemo" parameterType="int">
+		DELETE FROM tbl_memo  
+		WHERE CODE = #{code}
+	</delete>
+</mapper>
