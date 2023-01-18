@@ -3,7 +3,6 @@ package kr.or.ddit.board.vo;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import javax.validation.constraints.Email;
@@ -52,15 +51,15 @@ public class BoardVO implements Serializable{
 	private MultipartFile[] boFiles;
 	
 	private int startAttNo;
-
+	
 	public void setBoFiles(MultipartFile[] boFiles) {
-		if(boFiles!=null && boFiles.length>0) {
+		if(boFiles!=null && boFiles.length > 0) {
 			this.boFiles = boFiles;
-			this.attatchList= Arrays.stream(boFiles)
-				.filter((f)->!f.isEmpty())
-				.map((f)->{
-					return new AttatchVO(f);
-				}).collect(Collectors.toList());
+			this.attatchList = Arrays.stream(boFiles)
+								.filter((f)->!f.isEmpty())
+								.map((f)->{
+									return new AttatchVO(f);
+								}).collect(Collectors.toList());
 		}
 	}
 }

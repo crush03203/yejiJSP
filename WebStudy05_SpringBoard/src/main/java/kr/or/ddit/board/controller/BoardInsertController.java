@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 
 import kr.or.ddit.board.service.BoardService;
 import kr.or.ddit.board.vo.BoardVO;
@@ -28,7 +26,7 @@ public class BoardInsertController {
 	
 	@PostConstruct
 	public void init() {
-		log.info("주입된 service 객체 : {}" ,service.getClass().getName());
+		log.info("주입된 service 객체 : {}", service.getClass().getName());
 	}
 	
 	@ModelAttribute("board")

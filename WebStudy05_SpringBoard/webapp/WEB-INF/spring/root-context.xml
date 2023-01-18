@@ -23,12 +23,25 @@
 	
 	<util:properties id="appInfo" location="classpath:kr/or/ddit/appInfo.properties" />
 	
-	
 	<bean id="filterMultipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver" 
 		p:defaultEncoding="#{appInfo.defaultEncoding}"
 		p:maxInMemorySize="#{appInfo.inMemorySize}"
 		p:maxUploadSize="#{T(java.lang.Integer).parseInt(appInfo.perFileSize) * T(java.lang.Integer).parseInt(appInfo.maxFileCount)}"
 		p:maxUploadSizePerFile="#{appInfo.perFileSize}"
 	/>
-	
 </beans>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

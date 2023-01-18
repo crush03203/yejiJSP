@@ -13,7 +13,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import kr.or.ddit.vo.PagingVO;
 
-public class PaginationTag extends TagSupport {
+public class PaginationTag extends TagSupport{
 	private String type;
 	public void setType(String type) {
 		this.type = type;
@@ -23,27 +23,37 @@ public class PaginationTag extends TagSupport {
 		this.pagingVO = pagingVO;
 	}
 	
-	
-	
-	
 	@Override
 	public int doEndTag() throws JspException {
 		HttpServletRequest request = (HttpServletRequest) pageContext.getRequest();
 		ServletContext application = pageContext.getServletContext();
 		
-		WebApplicationContext SpringContainer = RequestContextUtils.findWebApplicationContext(request, application);
+		WebApplicationContext springContainer = RequestContextUtils.findWebApplicationContext(request, application);
 		
-		PaginationManager manager = SpringContainer.getBean(PaginationManager.class);
+		PaginationManager manager = springContainer.getBean(PaginationManager.class);
 		
-		PaginationRenderer renderer = manager.renderType(type);
+		PaginationRenderer renderer = manager.rendererType(type);
 		
-		JspWriter out = pageContext.getOut(); //데이터 기록하기 위한 출력스트림
+		JspWriter out = pageContext.getOut();
 		
 		try {
-			out.println(renderer.renderPaginnation(pagingVO));
+			out.println(renderer.renderPagination(pagingVO));
+			
 			return EVAL_PAGE;
 		} catch (IOException e) {
 			throw new JspException(e);
 		}
+		
 	}
 }
+
+
+
+
+
+
+
+
+
+
+

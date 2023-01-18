@@ -21,7 +21,7 @@ import lombok.ToString;
 @ToString(exclude="realFile")
 public class AttatchVO implements Serializable{
 	@JsonIgnore
-	private MultipartFile realFile;
+	private transient MultipartFile realFile;
 	public AttatchVO(MultipartFile realFile) {
 		super();
 		this.realFile = realFile;
@@ -41,11 +41,9 @@ public class AttatchVO implements Serializable{
 	private String attFancysize;
 	private Integer attDownload;
 	
-	
-	
 	public void saveTo(File saveFolder) throws IOException {
-		if(realFile ==null || realFile.isEmpty()) return; 
-		realFile.transferTo(new File(saveFolder,attSavename));
+		if(realFile==null || realFile.isEmpty()) return;
+		realFile.transferTo(new File(saveFolder, attSavename));
 	}
 }	
 

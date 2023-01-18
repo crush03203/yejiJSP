@@ -66,7 +66,6 @@ public class PagingVO<T> {
 	public int getEndPage() {
 		return endPage > totalPage ? totalPage : endPage;
 	}
-	
 }
 
 
