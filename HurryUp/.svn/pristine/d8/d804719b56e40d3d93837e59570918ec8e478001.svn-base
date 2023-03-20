@@ -1,0 +1,38 @@
+package kr.or.ddit.nurse.service;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.commons.vo.OperationInfomationVO;
+import kr.or.ddit.commons.vo.SymptomVO;
+import kr.or.ddit.commons.vo.TrmChartVO;
+
+/**
+ * 
+ * <pre>
+ *  수술검사 화면을 위한 Business Logic Layer
+ * </pre>
+ * @author 위대현
+ * @since 2023. 2. 14.
+ * @version 1.0
+ * <pre>
+ * [[개정이력(Modification Information)]]
+ *   수정일                         수정자                         수정내용
+ * --------         --------    ----------------------
+ * 2023. 2. 14.      작성자명                       최초작성
+ * Copyright (c) 2023 by DDIT All right reserved
+ * </pre>
+ */
+public interface OperationService {
+	
+	/**
+	 * 수술 대상이지만 아직 예약되지 않은 환자리스트를 진단내역을 기준으로 출력한다
+	 * @return 환자리스트
+	 */
+	public List<OperationInfomationVO> retrieveOperationList();
+
+	public TrmChartVO retrieveDiagnosisDetail(Map<String, String> map);
+
+	public List<SymptomVO> retrieveSymptomList(Map<String, String> map);
+
+}

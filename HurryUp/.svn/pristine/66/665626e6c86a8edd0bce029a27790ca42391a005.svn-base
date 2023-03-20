@@ -1,0 +1,14 @@
+package kr.or.ddit.nurse.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.commons.vo.OperationInfomationVO;
+
+@Mapper
+public interface OperationDAO {
+
+	public List<OperationInfomationVO> selectOperationList();
+
+}

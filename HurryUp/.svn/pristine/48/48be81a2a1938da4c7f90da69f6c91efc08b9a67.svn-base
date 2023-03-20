@@ -1,0 +1,21 @@
+package kr.or.ddit.nurse.dao;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Mapper;
+
+import kr.or.ddit.commons.vo.OperationInfomationVO;
+import kr.or.ddit.commons.vo.SymptomVO;
+import kr.or.ddit.commons.vo.TrmChartVO;
+
+@Mapper
+public interface OperationDAO {
+
+	public List<OperationInfomationVO> selectOperationList();
+
+	public TrmChartVO selectDiagnosis(Map<String, String> map);
+
+	public List<SymptomVO> selectSymptomList(Map<String, String> map);
+
+}

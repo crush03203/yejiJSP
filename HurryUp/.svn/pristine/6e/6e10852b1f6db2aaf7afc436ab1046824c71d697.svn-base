@@ -1,0 +1,88 @@
+package kr.or.ddit.nurse.service;
+
+import java.util.List;
+import java.util.Map;
+
+import kr.or.ddit.commons.vo.OperationInfomationVO;
+import kr.or.ddit.commons.vo.PatientVO;
+import kr.or.ddit.commons.vo.SymptomVO;
+import kr.or.ddit.commons.vo.TrmChartVO;
+import kr.or.ddit.nurse.vo.CexVO;
+
+/**
+ * 
+ * <pre>
+ *  수술검사 화면을 위한 Business Logic Layer
+ * </pre>
+ * @author 위대현
+ * @since 2023. 2. 14.
+ * @version 1.0
+ * <pre>
+ * [[개정이력(Modification Information)]]
+ *   수정일                         수정자                         수정내용
+ * --------         --------    ----------------------
+ * 2023. 2. 14.      작성자명                       최초작성
+ * Copyright (c) 2023 by DDIT All right reserved
+ * </pre>
+ */
+public interface OperationService {
+	
+	/**
+	 * 수술 대상이지만 아직 예약되지 않은 환자리스트를 진단내역을 기준으로 출력한다
+	 * @return 환자리스트
+	 */
+	public List<OperationInfomationVO> retrieveOperationList();
+
+	public TrmChartVO retrieveDiagnosisDetail(Map<String, String> map);
+
+	public List<SymptomVO> retrieveSymptomList(Map<String, String> map);
+	
+	/**
+	 * 임상검사 생성(검사결과 등록은 하지 않음)
+	 * @param map
+	 * @return 성공, 실패
+	 */
+	public int createCex(Map<String, String> map);
+	
+	/**
+	 * 임상검사 결과 중복검사
+	 * @param trmCd, diseaseCd
+	 * @return 차트코드와 상병코드와 일치하는 결과 의 갯수
+	 */
+	public int checkCexHistory(String trmCd, String diseaseCd);
+	
+	/**
+	 * 검사대기중인 환자리스트 검색
+	 * @return 환자ListVO
+	 */
+	public List<PatientVO> retrieveCexWaitList();
+
+	/**
+	 * 검사 완료된 환자리스트 검색
+	 * @return 환자ListVO
+	 */
+	public List<PatientVO> retrieveCexCompleteList();
+	
+	/**
+	 * 환자의 검사결과를 등록
+	 * @param cex
+	 * @return 성공 , 실패
+	 */
+	public int modifyCex(CexVO cex);
+
+	/**
+	 * 검사코드에 해당하는 검사결과
+	 * @param cexNo가 담긴 cexVO
+	 * @return 검사결과가 담긴 cexVO
+	 */
+	public CexVO retrieveCexDetail(CexVO cex);
+
+	/**
+	 * 환자의 검사기록을 조회함
+	 * @param map
+	 * @return 해당환자의 모든 검사리스트
+	 */
+	public List<CexVO> retrieveCexPatientList(Map<String, String> map);
+
+
+}

@@ -1,0 +1,420 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<link href="<%=request.getContextPath()%>/resources/css/gridstack.min.css" rel="stylesheet"/>
+<title>원무과</title>
+<style type="text/css">
+	#patient {
+		background-color: #ffffff;
+		border : 1px solid #FF0000 ;
+		width:80%; 
+/* 		height: 82%;  */
+		margin: auto; 
+		text-align: center;"
+	}
+	#button1 {
+		background-color: #ffffff;
+		font-size : 15px;
+		font-style:NanumSquareRound ;
+	    
+	}
+	button {
+	 border: none;
+	 }
+	
+	.table1 {
+	margin: 0 0 40px 0;
+  	width: 100%;
+  	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  	display: table;
+ 	margin: 0 0 40px 0;
+  	width: 100%;
+  	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  	display: table;
+  	text-align: center;
+	}
+	.table2 {
+	margin: 0 0 40px 0;
+  	width: 100%;
+  	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  	display: table;
+ 	margin: 0 0 40px 0;
+  	width: 100%;
+  	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  	display: table;
+  	text-align: center;
+	}
+	
+	thead tr {
+		background-color : #3161A3;
+		color : #ffffff 
+	}
+	insertForm{
+		width : 150px;
+		height : 150px;
+	}
+	a{
+		text-decoration-line: none;
+	}
+</style>
+
+<div class="grid-stack">
+  <div class="grid-stack-item" gs-w="2" gs-h="2">
+  	<div class="grid-stack-item-content">
+    <h4> 환자관리 </h4><hr>
+    	<form id="radi-search-form" class="search-form" name="searchForm"
+					onkeydown="f_block()">
+					<div>
+					
+					<select id="searchOption" class="radi-select" style="width:75px;">
+						<option value>검색</option>
+						<option value="paName">이름</option>
+						<option value="paReg">생년월일</option>
+						<option value="paHp">전화번호</option>
+					</select> 
+					
+					<input name="searchBtn" class="radi-input" id="searchWord"
+						type="text" value="" style="width:100px; display:inline-block;"> 
+					<input class="btn-submit"
+						id="Search" type="button" value="검색">
+					</div>
+				</form>
+				<table class="table-blue" >
+				<thead>
+					<tr>
+						<th><a>환자번호</a></th>
+						<th><a>환자명</a></th>
+						<th><a>생년월일</a></th>
+						<th><a>전화번호</a></th>
+						<th><a>성별</a></th>
+					</tr>
+				</thead>
+				<tbody id="radiTBody">
+				
+				</tbody>
+			</table>
+    </div>
+  </div>
+ 
+ 
+
+  
+  
+
+  <div class="grid-stack-item" gs-w="4" gs-h="2">
+
+  	<div class="grid-stack-item-content"><h4>대기실</h4><hr>
+    	<div style="width:180px; height:160px; background-color:white; display:inline-block" ><h6>제1 진료실</h6></div>
+    	<div style="width:180px; height:160px; background-color:white; display:inline-block" ><h6>제2 진료실</h6></div>
+    	<div style="width:180px; height:160px; background-color:white; display:inline-block" ><h6>제3 진료실</h6></div>
+    </div>
+  </div>
+
+  <div class="grid-stack-item" gs-w="3" gs-h="2">
+    <div class="grid-stack-item-content"><h4>처방내역</h4><hr>
+	</div>
+</div>
+
+
+
+<div class="grid-stack-item" gs-w="3" gs-h="4">
+    <div class="grid-stack-item-content"><h4>수납</h4><hr>
+    	<p>컨텐츠 or 버튼 들어갈꺼임~</p>
+    </div>
+  </div>
+ 
+ 
+  <div class="grid-stack-item" gs-w="2" gs-h="3">
+    <div class="grid-stack-item-content"><h4>접수</h4><hr>
+    <div class="tab patient-tab">
+			    <ul class="tabnav">
+			      <li><a href="#operWait">접수</a></li>
+			      <li><a href="#operSchedule">환자등록</a></li>
+			    </ul>
+			    <div class="tabcontentWrap">
+				    <div class="tabcontent">
+				      <div id="operWait">
+					    	<table>
+					    		<tr>
+						    		<td><label>환자번호</label></td>
+						    		<td><input type="text" id="regipaNo" name="regipaNo" value=""/></td>
+					    		</tr>
+					    		<tr>
+							    	<td><label>환자명</label></td>
+							    	<td><input type="text" id="regipaName" name="regipaName" value=""/></td>
+					    		</tr>
+					    		<tr>
+							    	<td><label>생년월일</label></td>
+							    	<td><input type="text" id="regipaReg" name="regipaReg" value="" /></td>
+					    		</tr>
+					    		<tr>
+							    	<td><label>전화번호</label></td>
+							    	<td><input type="text" id="regipaHp" name="regipaHp" value=""/></td>
+					    		</tr>
+					    		<tr>
+							    	<td><label>성별</label></td>
+							    	<td><input type="text" id="regipaSex" name="regipaSex" value="" /></td>
+					    		</tr>
+						    	<tr>
+						    		<td>
+							    	<select>
+							    		<option name="officeCd" value="DO101">제 1진료실</option>
+							    		<option name="officeCd" value="DO102">제 2진료실</option>
+							    		<option name="officeCd" value="DO103">제 3진료실</option>
+							    	</select>
+						    		</td>
+						    		<td>
+						    			<input type="button" id="regiBtn" value="접수">
+						    		</td>
+						    	</tr>
+					    	</table>
+				      </div>
+				      <div id="operSchedule">
+					    	<table>
+					    		<tr>
+							    	<td><label>환자명</label></td>
+							    	<td><input type="text" id="paName" name="paName" value=""/></td>
+					    		</tr>
+					    		<tr>
+							    	<td><label>생년월일</label></td>
+							    	<td><input type="text" id="paReg" name="paReg" value="" /></td>
+					    		</tr>
+					    		<tr>
+							    	<td><label>전화번호</label></td>
+							    	<td><input type="text" id="paHp" name="paHp" value=""/></td>
+					    		</tr>
+					    		<tr>
+							    	<th><label>우편번호</label></th>
+							    	<td><input type="text" id="paZip" name="paZip" value=""/></td>
+					    		</tr>
+					    		<tr>
+							    	<th><label>주소</label></th>
+							    	<td><input type="text" id="paAdd1" name="paAdd1" value=""/></td>
+					    		</tr>
+					    		<tr>
+							    	<th><label>상세주소</label></th>
+							    	<td><input type="text" id="paAdd2" name="paAdd2" value=""/></td>
+					    		</tr>
+					    		<tr>
+							    	<th><label>성별</label></th>
+							    	<td><select id="paSex">
+							    		<option value="M">남</option>
+							    		<option value="F">여</option>
+							    	</select>
+							    	</td>
+					    		</tr>
+						    	<tr>
+						    		<td colspan="2">
+						    			<input type="button" id="newPAbtn" value="등록">
+						    		</td>
+						    	</tr>
+					    	</table>
+				      </div>
+
+				    </div>
+				</div>
+			</div>
+	  
+    </div>
+  </div>
+ 
+  
+
+<script type="text/javascript">
+
+	GridStack.init()
+
+	function f_block(){
+		if(event.keyCode==13){
+			event.preventDefault();
+		}
+	}
+
+	/* 검색 */
+	//엔터키 누르면 검색실행되게 하는 코드
+	$(document).ready(function(){
+	    $("input[name=searchBtn]").keydown(function () {
+			//event.stopPropagation();
+	        if(event.keyCode == 13){//키가 13이면 실행 (엔터는 13)
+	        	console.log("체크");
+	            searchList();
+	        }
+	    });
+	    $("#Search").on("click", function(){
+	    	searchList();
+	    });
+	    
+	    searchList = function (){
+	        //검색 찾는 로직 구현
+	        let searchOption = $("#searchOption option:selected").val();
+			let searchWord = $("#searchWord").val();
+			
+			console.log(searchOption);
+			console.log(searchWord);
+			
+			if(searchWord == ''){
+				swal('검색 실패!', "검색어를 입력해주세요", 'error');
+				return false;
+			}
+			
+			let data = {
+				searchOption:searchOption,
+				searchWord:searchWord
+			}
+			
+			$.ajax({
+				url : "patientSearch",
+				method : "post",
+				data : JSON.stringify(data),
+				contentType : "application/json;charset=utf-8",
+				dataType : "json",
+				success : function(result) { 
+					console.log(result);
+					console.log(result.length);
+					
+					if(result == null || result.length == 0){
+						// 기록이 없을 때
+						swal('검색실패', "환자 정보가 없습니다.", "error");
+					}else if(result.length == 1){
+						// 기록이 하나일 때
+						let trTags = [];
+						$.each(result, function(i, v){
+							console.log(v);
+							let trTag = $("<tr>")
+							.append(
+								$("<td>").html(v.paNo)
+								, $("<td>").html(v.paName)
+								, $("<td>").html(v.paReg)
+								, $("<td>").html(v.paHp)
+								, $("<td>").html(v.paSex)
+							).data("waitVO",v);
+							trTags.push(trTag);
+						})
+						$("#radiTBody").html(trTags);
+					}else{
+						// 기록이 여러개일 때
+						let trTags = [];
+						$.each(result, function(i, v){
+							console.log(v);
+							let trTag = $("<tr>")
+							.append(
+								$("<td>").html(v.paNo)
+								, $("<td>").html("<a href='#'>"+v.paName+"</a>")
+								, $("<td>").html(v.paReg)
+								, $("<td>").html(v.paHp)
+								, $("<td>").html(v.paSex)
+							).data("waitVO",v);
+							trTags.push(trTag);
+						})
+						$("#radiTBody").html(trTags);
+						
+					}
+				},
+				error : function(jqXHR, status, error) {
+					console.log(jqXHR);
+					console.log(status);
+					console.log(error);
+				}
+			});
+			
+			$("#searchWord").val("");
+	    };
+	});
+
+	
+	/* 검색 끝 */
+
+$(function(){
+	let paTab = $(".patient-tab");
+	let paTabContents = $(".patient-tab .tabcontent > div");
+	
+
+	$('.tabcontent > div').hide();
+	
+	let paTabNavs = $('.patient-tab li a').click(function () {
+		paTabContents.hide().filter(this.hash).fadeIn();
+		paTabNavs.removeClass('active');
+		$(this).addClass('active');
+		return false;
+	});
+	paTabNavs.eq(0).click();
+
+});
+
+// 신규 환자 등록 //
+$(function(){
+	$("#newPAbtn").on("click", function(){
+		let paName = $("#paName").val();
+		let paReg = $("#paReg").val();		
+		let paHp = $("#paHp").val();		
+		let paZip = $("#paZip").val();		
+		let paAdd1 = $("#paAdd1").val();	
+		let paAdd2 = $("#paAdd2").val();	
+		let paSex = $("#paSex").val();	
+
+		let data = {
+				paName : paName,
+				paReg : paReg,
+				paHp : paHp,
+				paZip : paZip,
+				paAdd1 : paAdd1,
+				paAdd2 : paAdd2,
+				paSex : paSex,
+		}
+		$.ajax({
+			url : "/HurryUp/receiption/newPatient",
+			method : "post",
+			data : JSON.stringify(data),
+			contentType : "application/json;charset=utf-8",
+			dataType : "json",
+			success : function(result) { 
+				$("#paName").val("");
+				$("#paReg").val("");
+				$("#paHp").val("");
+				$("#paZip").val("");
+				$("#paAdd1").val("");
+				$("#paAdd2").val("");
+				$("#paSex").val("");
+			}					
+		});
+	});
+	
+});	
+
+// 접수 등록 //
+$(function(){
+	$("#regiBtn").on("click", function(){
+		let paNo = $("#regipaNo").val();		
+		let officeCd = $("[name=officeCd]:selected").val();
+		console.log(paNo)
+		console.log(officeCd)
+		let data = {
+				paNo : paNo,
+				officeCd: officeCd
+		}
+		$.ajax({
+			url : "/HurryUp/receiption/registration",
+			method : "post",
+			data : JSON.stringify(data),
+			contentType : "application/json;charset=utf-8",
+			dataType : "json",
+			success : function(result) { 
+				console.log(result);
+				console.log(result.length);
+				$("#regipaNo").val("");
+				$("#regipaName").val("");
+				$("#regipaReg").val("");
+				$("#regipaHp").val("");
+				$("#regipaSex").val("");
+				
+			},
+			error : function(jqXHR, status, error) {
+				console.log(jqXHR);
+				console.log(error);
+			}
+		});
+	});
+});	
+
+</script>

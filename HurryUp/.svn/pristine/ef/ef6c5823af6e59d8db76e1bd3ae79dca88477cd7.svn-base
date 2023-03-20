@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.pt.dao.PtAssinmentDAO">
+	
+	<!-- 물리치료실 대기환자 조회 -->
+	<select id="selectPtRoomList" resultType="kr.or.ddit.commons.vo.PtAssinmentVO">
+		 WITH testView AS (
+		    				SELECT  RCP_NO, MAX(WAIT_NUM) AS WAIT_NUM
+		    				 FROM  WAITING_HISTORY
+		    				 GROUP  BY  RCP_NO	)
+		SELECT  A.RCP_NO, A.WAIT_NUM, A.PA_NO, A.PA_NAME, A.DIV_CD, A.DIV_NM, A.WAITST_CD, A.WAITST_NM,A.PA_REG
+		FROM    V_WAIT_HIST A   INNER JOIN  testView B ON(A.RCP_NO = B.RCP_NO AND A.WAIT_NUM = B.WAIT_NUM)
+		WHERE   DIV_CD = 'DV003'
+        AND WAITST_CD = 'WS001'
+	</select>
+	
+	<!-- 물리치료실 bed 상태 -->
+	<select id="selectPtBedList" resultType="kr.or.ddit.commons.vo.PtAssinmentVO">
+		WITH REP_PAT AS
+			(SELECT B.RCP_NO, C.PA_NAME
+			FROM  RECEPTION B, PATIENT C
+			WHERE B.PA_NO = c.pa_no)
+		SELECT PT_BED_CD, A.RCP_NO, D.RCP_NO, D.PA_NAME
+		FROM PHYSIOTHERAPY A, REP_PAT D
+		WHERE A.RCP_NO = D.RCP_NO(+)
+		ORDER BY PT_BED_CD
+	</select>
+	
+	<!-- 베드 배정 -->	
+	<update id="updatePtBedFull" parameterType="kr.or.ddit.commons.vo.PtAssinmentVO">
+		UPDATE PHYSIOTHERAPY 
+		SET PT_BED_STATE = '1',
+			RCP_NO = #{rcpNo,jdbcType=VARCHAR}
+		WHERE PT_BED_CD=#{ptBedCd,jdbcType=VARCHAR}
+	</update>
+	
+	<!-- 배드 비우기 -->
+	<update id="updatePtBedEmpty" parameterType="kr.or.ddit.commons.vo.PtAssinmentVO">
+		UPDATE PHYSIOTHERAPY 
+		SET PT_BED_STATE = '0',
+			RCP_NO = NULL
+		WHERE PT_BED_CD=#{ptBedCd,jdbcType=VARCHAR}
+	</update>
+	
+	
+	
+	<select id="selectPatient" parameterType="string" resultType="kr.or.ddit.commons.vo.ReceptionVO">
+		SELECT A.RCP_NO
+			 , A.PA_NO
+			 , B.PA_NAME "patient.paName"
+			 , B.PA_HP "patient.paHp"
+    	 FROM reception A INNER JOIN PATIENT B ON(A.PA_NO = B.PA_NO)
+    	WHERE A.RCP_NO = #{rcpNo}
+	</select>
+	
+	<!-- 대기히스토리 추가(대기중->치료중) -->
+	<insert id="insertCureListChange" parameterType="hashMap">
+		INSERT INTO 
+				WAITING_HISTORY(WAIT_NO, RCP_NO, WAIT_DT, WAIT_NUM, WAITST_CD, DIV_CD)
+		VALUES(
+				( SELECT NVL(MAX(WAIT_NO),0)+1 
+                  FROM WAITING_HISTORY)
+				, #{rcpNo}
+                , SYSDATE
+				,(SELECT NVL(MAX(WAIT_NUM),0)+1 FROM WAITING_HISTORY)
+				,'WS004'
+                ,'DV003')
+	</insert>
+	
+	<!-- 대기히스토리 추가(대기중->완료) -->
+	<insert id="insertCompletionChange" parameterType="hashMap">
+		INSERT INTO 
+			waiting_history (
+    							wait_no,
+    							rcp_no,
+    							wait_dt,
+    							wait_num,
+    							waitst_cd,
+    							div_cd
+					) VALUES (	
+            			(SELECT NVL(MAX(WAIT_NO),0)+1 
+             			 FROM WAITING_HISTORY)
+                		,#{rcpNo}
+                		,SYSDATE
+						,(SELECT NVL(MAX(WAIT_NUM),0)+1 FROM WAITING_HISTORY)
+						,'WS003'
+						,'DV003')			
+	</insert>
+	
+	<!-- 환자검색 -->
+	<select id="searchPatients" resultType="kr.or.ddit.commons.vo.PatientVO" parameterType="hashMap">
+		SELECT PA_NO
+			 , PA_NAME
+			 , PA_REG
+		     , PA_HP
+		     , PA_ZIP
+		     , PA_ADD1
+		     , PA_ADD2
+		     , PA_PIYN
+		     , PA_SEX              
+		  FROM PATIENT   
+		<where>
+			<if test="searchOption!=null">
+				<choose>
+					<when test="searchOption=='no'">
+						AND PA_NO = #{searchWord}
+					</when>
+					<when test="searchOption=='name'">
+						AND PA_NAME LIKE '%' || #{searchWord} || '%'
+					</when>
+				</choose>
+			</if>
+		</where>      
+	</select>
+	
+	<!-- 환자 List 출력 -->
+	<select id="selectPatientList" resultType="kr.or.ddit.commons.vo.PatientVO" parameterType="hashMap">
+		SELECT
+			    pa_no,
+			    pa_name,
+			    pa_reg,
+			    pa_hp,
+			    pa_zip,
+			    pa_add1,
+			    pa_add2,
+			    pa_delete,
+			    pa_sex,
+			    pa_piyn
+		 FROM
+		     patient
+	</select>
+</mapper>

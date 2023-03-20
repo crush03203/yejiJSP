@@ -1,0 +1,36 @@
+package kr.or.ddit.nurse.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.stereotype.Service;
+
+import kr.or.ddit.commons.vo.OperationInfomationVO;
+import kr.or.ddit.commons.vo.SymptomVO;
+import kr.or.ddit.commons.vo.TrmChartVO;
+import kr.or.ddit.nurse.dao.OperationDAO;
+
+@Service
+public class OperationServiceImpl implements OperationService {
+	
+	@Inject
+	private OperationDAO operationDAO;
+
+	@Override
+	public List<OperationInfomationVO> retrieveOperationList() {
+		return operationDAO.selectOperationList();
+	}
+
+	@Override
+	public TrmChartVO retrieveDiagnosisDetail(Map<String, String> map) {
+		return operationDAO.selectDiagnosis(map);
+	}
+
+	@Override
+	public List<SymptomVO> retrieveSymptomList(Map<String, String> map) {
+		return operationDAO.selectSymptomList(map);
+	}
+
+}

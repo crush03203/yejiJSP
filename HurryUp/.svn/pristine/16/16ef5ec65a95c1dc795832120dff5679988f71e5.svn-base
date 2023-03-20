@@ -1,0 +1,24 @@
+package kr.or.ddit.commons.vo;
+
+import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@EqualsAndHashCode(of="fiatNo")
+@Data
+public class FilmAttatchVO extends AttachCommonsVO implements Serializable{
+	private String fiatNo;
+	private Integer radresNo;
+	private String fiatSavenm;
+	private String fiatOrinm;
+	
+	@Override
+	public String getfadCd() {
+		return fiatNo;
+	}
+}

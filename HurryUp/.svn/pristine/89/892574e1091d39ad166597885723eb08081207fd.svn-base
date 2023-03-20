@@ -1,0 +1,30 @@
+package kr.or.ddit.commons.vo;
+
+import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode(of="opNo")
+@Data
+public class OperationInfomationVO {
+	private String opNo;
+	private String opDate;
+	private String opState;
+	private String trmCd;
+	private String opStartTime;
+	private String opEndTime;
+	private String diseaseCd;
+	private String otCd;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private LocalDateTime opReservStarttime;
+	@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+	private LocalDateTime opReservEndtime;
+	
+	private String paNo;
+	private String paName;
+	private DiagHistoryVO diagHistory;
+	
+}

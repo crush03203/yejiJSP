@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.commons.dao.NoticeDAO">
+
+	<!-- 공지사항 조회 -->
+	<select id="selectNoticeList" resultType="kr.or.ddit.commons.vo.NoticeVO">
+		SELECT *
+		FROM notice
+		order by NTC_CD desc
+	</select>
+	
+	<!-- 	공지사항 Insert -->
+	<insert id="insertNotice" parameterType="kr.or.ddit.commons.vo.NoticeVO">
+		INSERT INTO notice (
+	    						ntc_cd, ntc_title, ntc_cont,
+	    						ntc_endt, ntc_hit, emp_no
+		) VALUES (
+	    			(SELECT NVL(MAX(ntc_cd),0)+1  FROM NOTICE)
+	    			, #{ntcTitle,jdbcType=VARCHAR}
+	    			, #{ntcCont,jdbcType=CLOB}
+	    			, sysdate
+	    			, 0
+	    			, #{empNo,jdbcType=NUMERIC}
+		  )
+	</insert>
+	
+	<!-- 등록된 근무상태를 모두 조회 -->
+	<select id="selectScheduleList" resultType="kr.or.ddit.commons.vo.WorkingStatusVO">
+	/* kr.or.ddit.commons.dao.NoticeDAO.selectScheduleList */
+		SELECT
+		    A.WS_NO
+		    , A.EMP_NO
+		    , A.WS_START_DT
+		    , A.WS_END_DT
+		    , A.WSD_CD
+		    , A.WS_COLOR
+		    , B.EMP_NM
+		    , C.WSD_NAME
+		FROM working_status A
+		INNER JOIN EMPLOYEE B ON A.EMP_NO = B.EMP_NO
+		INNER JOIN WORKING_STATUS_DETAIL C ON A.WSD_CD = C.WSD_CD
+	</select>
+	
+	<!-- 근무상태 등록 -->
+	<select id="insertSchedule" parameterType="WorkingStatusVO">
+	/* kr.or.ddit.commons.dao.NoticeDAO.insertSchedule */
+		INSERT INTO working_status (
+		    ws_no,
+		    ws_start_dt,
+		    ws_end_dt
+		) VALUES (
+		    seq_schedule.nextval
+		    , #{wsStartDt}
+		    , #{wsEndDt}
+		)
+	</select>
+	
+	<!-- 직원목록조회 -->
+	<select id="selectEmpList" resultType="EmployeeVO">
+	/* kr.or.ddit.commons.dao.NoticeDAO.selectEmpList */
+	
+		SELECT
+		    emp_no,
+		    emp_nm
+		FROM
+		    employee	
+	</select>
+</mapper>

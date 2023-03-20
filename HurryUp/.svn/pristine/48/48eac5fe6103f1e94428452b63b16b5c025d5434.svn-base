@@ -1,0 +1,44 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<title>수술/검사</title>
+<style>
+*{border: 1px solid pink;}
+.oper-wrapper {height: 51.5rem;}
+.oper-pa-list {width: 30rem; height: 20rem;}
+</style>
+
+<div class="oper-wrapper">
+	<div class="oper-pa-list card-grid">
+		<div class="tab">
+		    <ul class="tabnav">
+		      <li><a href="#wait">수술대기</a></li>
+		      <li><a href="#schedule">수술예정</a></li>
+		      <li><a href="#complete">수술완료</a></li>
+		    </ul>
+		    <div class="tabcontentWrap">
+			    <div class="tabcontent">
+			      <div id="wait"></div>
+			      <div id="schedule"></div>
+			      <div id="complete"></div>
+			    </div>
+			</div>
+		</div>	
+	</div>
+</div>
+
+<script>
+/* tab 메뉴 */
+$(function(){
+	$('.tabcontent > div').hide();
+	$('.tabnav a').click(function () {
+	  $('.tabcontent > div').hide().filter(this.hash).fadeIn();
+	  $('.tabnav a').removeClass('active');
+	  $(this).addClass('active');
+	  
+	  let hash = this.hash;
+	  inputTapChange(hash);
+	  
+	  return false;
+	}).filter(':eq(0)').click();
+});
+</script>

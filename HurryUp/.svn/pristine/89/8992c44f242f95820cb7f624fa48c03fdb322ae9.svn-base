@@ -1,0 +1,409 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<title>수술/검사</title>
+<style>
+html, body {height: 100%; overflow: hidden;}
+.oper-card{margin: 0.5rem;}
+.oper-wrapper { height: 51.5rem; display: flex;}
+.content-left {width: 31rem; height: 51.3rem;}
+.content-center {width: 31rem; height: 51.3rem;}
+.content-right {width: 58rem; height: 51.3rem;}
+.oper-pa-list {width: 30rem; height: 14rem;}
+.oper-pa-detail {width: 30rem; height: 36rem;}
+.cex-list {width: 30rem; height: 25rem;}
+.cex-input {width: 30rem; height: 25rem;}
+.oper-list {width: 56.7rem; height: 50.5rem;}
+.tabcontentWrap{overflow: auto;}
+.a_btn_oper{background-color: white; color: #ff3333; padding: 5px 20px; text-align: center; text-decoration: none; border: none;}
+.a_btn_oper:hover{background-color: #ff3333; color: white;}
+
+</style>
+
+<div class="oper-wrapper">
+	<!-- 왼쪽구역시작 -->
+	<div class="content-left">
+		<div class="oper-pa-list oper-card card-grid">
+			<div class="tab patient-tab">
+			    <ul class="tabnav">
+			      <li><a href="#operWait">수술대기</a></li>
+			      <li><a href="#operSchedule">수술예정</a></li>
+			      <li><a href="#operComplete">수술완료</a></li>
+			    </ul>
+			    <div class="tabcontentWrap tab-bigger">
+				    <div class="tabcontent">
+				      <div id="operWait">
+				      	<table class="table-blue">
+							<thead class="fixedHeader">
+								<tr>
+									<th>차트코드</th>
+									<th>상병코드</th>
+									<th>환자번호</th>
+									<th>환자명</th>
+									<th>검사여부</th>
+							</thead>
+							<tbody id='operWaitTbody'></tbody>
+						</table>
+				      </div>
+				      <div id="operSchedule"></div>
+				      <div id="operComplete"></div>
+				    </div>
+				</div>
+			</div>	
+		</div>
+		<div class="oper-pa-detail oper-card card-grid">
+			<h4>진단상세</h4>
+			 <div class="mb-3 row">
+			    <label for="inputPassword" class="col-sm-2 col-form-label">차트코드</label>
+			    <div class="col-sm-10">
+			      <input type="text" class="form-control" id="oper-pa-detail-trmCd" readonly="readonly">
+			    </div>
+			 </div>
+			 <div class="mb-3 row">
+			    <label for="inputPassword" class="col-sm-2 col-form-label">상병코드</label>
+			    <div class="col-sm-10">
+			      <input type="text" class="form-control" id="oper-pa-detail-diseaseCd" readonly="readonly">
+			    </div>
+			 </div>
+			 <div class="mb-3 row">
+			    <label for="inputPassword" class="col-sm-2 col-form-label">상병명</label>
+			    <div class="col-sm-10">
+			      <input type="text" class="form-control" id="oper-pa-detail-icdName" readonly="readonly">
+			    </div>
+			 </div>
+			 <div class="mb-3 row">
+			    <label for="inputPassword" class="col-sm-2 col-form-label">진단의</label>
+			    <div class="col-sm-10">
+			      <input type="text" class="form-control" id="oper-pa-detail-empNm" readonly="readonly">
+			    </div>
+			 </div>
+			 <div class="mb-3 row">
+			    <label for="inputPassword" class="col-sm-2 col-form-label">환자번호</label>
+			    <div class="col-sm-10">
+			      <input type="text" class="form-control" id="oper-pa-detail-paNo" readonly="readonly">
+			    </div>
+			 </div>
+			 <div class="mb-3 row">
+			    <label for="inputPassword" class="col-sm-2 col-form-label">환자명</label>
+			    <div class="col-sm-10">
+			      <input type="text" class="form-control" id="oper-pa-detail-paName" readonly="readonly">
+			    </div>
+			 </div>
+			 <div class="mb-3 row">
+			    <label for="inputPassword" class="col-sm-2 col-form-label">의무기록</label>
+			    <div class="col-sm-10">
+			      <textarea class="form-control" id="oper-pa-detail-mediRecord" readonly="readonly"></textarea>  
+			    </div>
+			 </div>
+			 <div class="mb-3 row">
+			    <label for="inputPassword" class="col-sm-2 col-form-label">증상내역</label>
+			    <div class="col-sm-10">
+			      <table class= "table-blue">
+			      	<thead class="fixedHeader">
+			      		<tr>
+			      			<th>차트코드</th>
+			      			<th>증상코드</th>
+			      			<th>증상내용</th>
+			      		</tr>
+			      	</thead>
+			      	<tbody id = "symTbody"></tbody>
+			      </table>
+			    </div>
+			 </div>
+		</div>
+	</div>
+	<!-- 왼쪽구역끝-->
+	
+	<!-- 가운데 구역 시작 -->
+	<div class="content-center">
+		<div class="cex-list oper-card card-grid">
+			<div class="tab cex-tab">
+			    <ul class="tabnav">
+			      <li><a href="#cexWait">검사대기</a></li>
+			      <li><a href="#cexSchedule">검사등록</a></li>
+			      <li><a href="#cexComplete">검사완료</a></li>
+			    </ul>
+			    <div class="tabcontentWrap">
+				    <div class="tabcontent">
+				      <div id="cexWait">
+				      	<table class="table-blue">
+							<thead class="fixedHeader">
+								<tr>
+									<th>차트코드</th>
+									<th>상병코드</th>
+									<th>환자번호</th>
+									<th>환자명</th>
+									<th>성별</th>
+									<th>생년월일</th>
+							</thead>
+							<tbody id='cexWaitTbody'></tbody>
+						</table>
+				      </div>
+				      <div id="cexSchedule"></div>
+				      <div id="cexComplete"></div>
+				    </div>
+				</div>
+			</div>	
+		</div>
+		<div class="cex-input oper-card card-grid">
+		</div>
+	</div>
+	<!-- 가운데 구역 끝 -->
+	
+	<!-- 오른쪽 구역 시작 -->
+	<div class="content-right">
+		<div class="oper-list oper-card card-grid">
+			<div class="tab operation-tab">
+			    <ul class="tabnav">
+			      <li><a href="#operList">수술목록</a></li>
+			      <li><a href="#operRoom">수술실예약</a></li>
+			    </ul>
+			    <div class="tabcontentWrap">
+				    <div class="tabcontent">
+				      <div id="operList"></div>
+				      <div id="operRoom"></div>
+				    </div>
+				</div>
+			</div>	
+		</div>
+	</div>
+	<!-- 오른쪽 구역 끝 -->
+</div>
+
+<script>
+/* tab 메뉴 */
+$(function(){
+	let paTab = $(".patient-tab");
+	let paTabContents = $(".patient-tab .tabcontent > div");
+	let cexTab = $(".cex-tab");
+	let cexTabContents = $(".cex-tab .tabcontent > div");
+	let operTab = $(".operation-tab");
+	let operTabContents = $(".operation-tab .tabcontent > div");
+
+	$('.tabcontent > div').hide();
+	
+	let paTabNavs = $('.patient-tab li a').click(function () {
+		paTabContents.hide().filter(this.hash).fadeIn();
+		paTabNavs.removeClass('active');
+		$(this).addClass('active');
+		return false;
+	});
+	paTabNavs.eq(0).click();
+	
+	let cexTabNavs = $('.cex-tab li a').click(function () {
+		cexTabContents.hide().filter(this.hash).fadeIn();
+		cexTabNavs.removeClass('active');
+		$(this).addClass('active');
+		return false;
+	});
+	cexTabNavs.eq(0).click();
+	
+	let operTabNavs = $('.operation-tab li a').click(function () {
+		operTabContents.hide().filter(this.hash).fadeIn();
+		operTabNavs.removeClass('active');
+		$(this).addClass('active');
+		return false;
+	});
+	operTabNavs.eq(0).click();
+});
+
+/* 수술대기 환자 리스트 출력  */
+let operationList = function(){
+	$.ajax({
+		url : "operationList",
+		method : "get",
+		contentType: "application/json;charset=utf-8",
+		dataType : "json",
+		success : function(result) {
+			let trTags = [];
+			let cexStatus = '';
+			let trTag = '';
+			$.each(result, function(i,v){
+				if(!v.diagHistory.cex.cexStatus || v.diagHistory.cex.cexStatus == 'F'){
+					cexStatus = '미검사';
+					var v_trmCd = v.trmCd;
+					var v_diseaseCd = v.diseaseCd;
+					
+					aTag = $('<a>').attr({"class" : "a_btn_oper"
+									 	 , "data-bs-toggle" : "tooltip"
+										 , "data-bs-placement" : "top"
+										 , "title" : "클릭시 검사 생성"
+										 , "href" : "javascript:void(0);"
+										 , "onclick" : "cexCreate(\""+v_trmCd+"\",\""+v_diseaseCd+"\");"
+										}).html(cexStatus);
+					trTag = $("<tr>").append(
+						$("<td>").html(v.trmCd)		
+						, $("<td>").html(v.diseaseCd)
+						, $("<td>").html(v.paNo)
+						, $("<td>").html(v.paName)
+						, $("<td>").append(aTag)
+					)
+				} else if(v.diagHistory.cex.cexStatus == 'T'){
+					cexStatus = '검사완료';				
+					trTag = $("<tr>").append(
+						$("<td>").html(v.trmCd)		
+						, $("<td>").html(v.diseaseCd)
+						, $("<td>").html(v.paNo)
+						, $("<td>").html(v.paName)
+						, $("<td>").html(cexStatus)
+					)
+				}
+				trTags.push(trTag);
+			})
+			$("#operWaitTbody").html(trTags);
+			
+			/* 검사대기리스트출력 */
+			cexWaitList();
+		},
+		error : function(jqXHR, status, error) {
+			console.log(jqXHR);
+			console.log(status);
+			console.log(error);
+		}
+	});
+}
+operationList();
+
+/* 수술대기 테이블 클릭이벤트 */
+$('#operWaitTbody').on('click', 'tr', function(event){
+	let v_tr = $(this);
+	let v_trmCd = v_tr.children().eq(0).text();
+	let v_diseaseCd = v_tr.children().eq(1).text();
+	
+	let data = {
+			trmCd : v_trmCd,
+			diseaseCd : v_diseaseCd
+	}
+	
+	$.ajax({
+		url : "diagnosisDetail",
+		method : "post",
+		data : JSON.stringify(data),
+		contentType : "application/json;charset=utf-8",
+		dataType : "json",
+		success : function(result) {
+			$('#oper-pa-detail-trmCd').val(result.trmCd);
+			$('#oper-pa-detail-diseaseCd').val(result.diagHistoryVOList[0].diseaseCd);
+			$('#oper-pa-detail-icdName').val(result.diagHistoryVOList[0].icdName);
+			$('#oper-pa-detail-empNm').val(result.empNm);
+			$('#oper-pa-detail-paNo').val(result.paNo);
+			$('#oper-pa-detail-paName').val(result.paName);
+			$('#oper-pa-detail-mediRecord').val(result.mediRecord);
+			symptomList(v_trmCd);
+		},
+		error : function(jqXHR, status, error) {
+			console.log(jqXHR);
+			console.log(status);
+			console.log(error);
+		}
+	});
+});
+
+/* 증상 리스트 출력 */
+function symptomList(trmCd){
+	let data = { trmCd : trmCd };
+	
+	$.ajax({
+		url : "symptomList",
+		method : "post",
+		data : JSON.stringify(data),
+		contentType : "application/json;charset=utf-8",
+		dataType : "json",
+		success : function(result) {
+			let trTags = [];
+			let trTag = '';
+			$.each(result, function(i,v){
+				trTag = $('<tr>').append(
+							$('<td>').html(v.trmCd)
+							, $('<td>').html(v.symCd)							
+							, $('<td>').html(v.symDetail)							
+						)
+				trTags.push(trTag);
+			})
+			$('#symTbody').html(trTags);
+		},
+		error : function(jqXHR, status, error) {
+			console.log(jqXHR);
+			console.log(status);
+			console.log(error);
+		}
+	});
+}
+/* 임상결과 생성 */
+function cexCreate(trmCd, diseaseCd){
+	let flag;
+	let v_trmCd = trmCd;
+	let v_diseaseCd = diseaseCd;
+	let data = {
+			"trmCd" : v_trmCd, 
+			"diseaseCd" : v_diseaseCd
+	}
+	
+	swal({
+		  title: "검사생성",
+		  text: "검사를 생성하시겠습니까?",
+		  icon: "info",
+		  buttons: true
+		})
+		.then((willCreate) => {
+		  if (willCreate) {
+			  
+			  $.ajax({
+					url : "cexCreate",
+					method : "post",
+					data : JSON.stringify(data),
+					contentType : "application/json;charset=utf-8",
+					dataType : "json",
+					success : function(result) {
+						console.log(result);
+						if(result == 1){
+							swal("생성성공", "검사생성에 성공했습니다", "success");
+						}else{
+							swal("생성실패","검사생성에 실패했습니다","error");			
+						}
+					},
+					error : function(jqXHR, status, error) {
+						console.log(jqXHR);
+						console.log(status);
+						console.log(error);
+					}
+				});
+		  } else {
+		    swal("취소되었습니다!");
+		  }
+		});
+}
+/* 검사대기환자리스트출력 */
+function cexWaitList(){
+	$.ajax({
+		url : "cexWaitList",
+		method : "post",
+		contentType : "application/json;charset=utf-8",
+		dataType : "json",
+		success : function(result) {
+			
+			let trTags = [];
+			let trTag = '';
+			$.each(result, function(i,v){
+				let diagList = v.receptionList[0].trmChart.diagHistoryVOList[0];
+				console.log(diagList);
+ 				trTag = $('<tr>').append(
+							$('<td>').html(diagList.trmCd)
+							, $('<td>').html(diagList.diseaseCd)							
+							, $('<td>').html(v.paNo)							
+							, $('<td>').html(v.paName)							
+							, $('<td>').html(v.paSex)							
+							, $('<td>').html(v.paReg)							
+						)
+				trTags.push(trTag);
+			})
+			$('#cexWaitTbody').html(trTags);
+		},
+		error : function(jqXHR, status, error) {
+			console.log(jqXHR);
+			console.log(status);
+			console.log(error);
+		}
+	});
+}
+
+</script>

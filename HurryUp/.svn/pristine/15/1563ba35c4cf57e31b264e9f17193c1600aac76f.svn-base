@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="kr.or.ddit.nurse.dao.OperationDAO">
+
+	<resultMap type="OperationInfomationVO" id="operationMap" autoMapping="true">
+		<id property="opNo" column="OP_NO"/>
+		<association property="diagHistory" javaType="DiagHistoryVO" >
+			<association property="cex" javaType="CexVO" autoMapping="true"></association>
+		</association>
+	</resultMap>
+	<!-- 수술 대상 환자 중 수술 예약이 실시되지 않은 환자 리스트를 조회 -->
+	<select id="selectOperationList" resultMap="operationMap">
+	/* OperationDAO.selectOperationList */
+	
+		SELECT
+		    A.TRM_CD
+		    , B.DISEASE_CD 
+		    , D.PA_NO
+		    , D.PA_NAME
+		    , B.ICD_NAME
+		    , F.CEX_STATUS
+		FROM TRM_CHART A
+		INNER JOIN DIAGNOSIS_HISTORY B
+		ON A.TRM_CD = B.TRM_CD
+		LEFT OUTER JOIN OPERATION_INFOMATION E
+		ON B.DISEASE_CD = E.DISEASE_CD AND B.TRM_CD = E.TRM_CD
+		LEFT OUTER JOIN CLINICAL_EXAMINATION F
+		ON B.DISEASE_CD = F.DISEASE_CD AND B.TRM_CD = F.TRM_CD
+		INNER JOIN RECEPTION C
+		ON A.RCP_NO = C.RCP_NO
+		INNER JOIN PATIENT D
+		ON C.PA_NO = D.PA_NO
+		WHERE B.OPER_TF = 'T'
+		AND E.OP_NO IS NULL
+	</select>
+</mapper>

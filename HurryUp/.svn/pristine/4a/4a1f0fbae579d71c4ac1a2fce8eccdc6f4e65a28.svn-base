@@ -1,0 +1,193 @@
+package kr.or.ddit.pt.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
+
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import kr.or.ddit.commons.vo.PatientVO;
+import kr.or.ddit.commons.vo.PtAssinmentVO;
+import kr.or.ddit.commons.vo.PtDocumentVO;
+import kr.or.ddit.commons.vo.ReceptionVO;
+import kr.or.ddit.commons.vo.WaitHistoryVO;
+import kr.or.ddit.pt.service.PtAssinmentService;
+import lombok.extern.slf4j.Slf4j;
+
+/**
+ * @author 장예지
+ * @since 2023. 2. 3.
+ * @version 1.0
+ * @see javax.servlet.http.HttpServlet
+ * 
+ *      <pre>
+ * [[개정이력(Modification Information)]]
+ * 수정일                          수정자               수정내용
+ * --------     --------    ----------------------
+ * 2023. 2. 3.      장예지       최초작성
+ * Copyright (c) 2023 by DDIT All right reserved
+ *      </pre>
+ */
+
+@Slf4j
+@RequestMapping("/pt")
+@Controller
+public class PtViewController {
+
+	@Inject
+	PtAssinmentService service;
+
+	
+	@GetMapping("/ptView")
+	public String ptView(@ModelAttribute("ptAssinmentVOList") PtAssinmentVO ptAssinmentVO, Model model) {
+
+		List<PtAssinmentVO> ptAssinmentVOList = service.retrievePtRoomList(ptAssinmentVO);
+		List<PtAssinmentVO> ptBedList = service.retrievePtBedList();
+
+		model.addAttribute("ptAssinmentList", ptAssinmentVOList);
+		model.addAttribute("ptBedList", ptBedList);
+		String viewName = null;
+		viewName = "pt/ptView";
+
+		return viewName;
+	}
+
+	/**
+	 * Bed 상태를 변경 (물리치료실 대기중->치료중 update) watingHistory Insert
+	 * 대기상태를 insert
+	 * @param ptAssinmentVO
+	 * @param waitHistoryVO
+	 * @return
+	 */
+	@ResponseBody
+	@PostMapping(value ="/ptBedFull", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	public String ptBedFull(@RequestBody PtAssinmentVO ptAssinmentVO) {
+		log.info("hi  ptAssinmentVO : {} ",ptAssinmentVO); //ok 확인
+	
+		
+		//가져온 rcpNo , bedNo를 가지고 환자의 개인정보를 가지고온다
+		//개인정보가 있는 테이블은 ReceptionVO
+		//가져온 정보를 가지고 
+		//Insert를 위해서 필
+		//receptionVO 정보 가져오기
+		ReceptionVO receptionVO = service.selectPatient(ptAssinmentVO.getRcpNo()); 
+		log.info("hi  receptionVO : {} ",receptionVO); //ok 확인
+		//가지고 온 정보로 sql문에  업데이트 update bedStatus 
+		int rowcnt = service.modifyptBedFull(ptAssinmentVO); //업데이트
+		
+		//watingHistory에 Insert 필요한 건 watingHistoryVO필요
+		WaitHistoryVO waitHistoryVO = new WaitHistoryVO();
+		waitHistoryVO.setRcpNo(ptAssinmentVO.getRcpNo());
+//		  service.cureListChangeInsert(WaitHistoryVO);
+		
+		
+		
+		
+		
+		
+//		Map<String, Object> resultMap = new HashMap<String, Object>();
+//		resultMap.put("result", 0);
+//		if(resultMap != null) { //성공했다
+//			resultMap.put("result", 1);
+//			resultMap.put("receptionVO", resultMap);
+//			resultMap.put("ptAssinmentVO", ptAssinmentVO);
+////			resultMap.put("waitHistoryVO", waitHistoryVO);
+//			log.info("resultMap : {}" ,resultMap);
+//		}
+		return "ok";
+	}
+	
+//	@ResponseBody
+//	@GetMapping(value ="/reception", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//	public ReceptionVO getReceptionVO(
+//			@RequestBody VO vo
+//			) {
+//		ReceptionVO receptionVO = service.ret
+//				
+//		if(cnt >0 ) {
+//			"성공"
+//		}
+//		if(Revo=null) {
+//			
+//			
+//		}
+//		return receptionVO;
+//	}
+
+	
+	/**
+	 * Bed 상태를 변경 (물리치료실 치료중->치료완료 update) 
+	 * 치료 완료 상태를 insert
+	 * @param ptAssinmentVO
+	 * @param waitHistoryVO
+	 * @return
+	 */
+	@ResponseBody
+	@PostMapping("/ptBedEmpty")
+	public Map<String, Object> ptBedEmpty(PtAssinmentVO ptAssinmentVO, WaitHistoryVO waitHistoryVO) {
+		log.info("ptAssinmentVO : " + ptAssinmentVO);
+		log.info("WaitHistoryVO : " + waitHistoryVO);
+		int result = service.ptBedEmpty(ptAssinmentVO);
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		if (result > 0) {// 성공했다면
+//			ReceptionVO receptionVO = ptAssinmentdao.selectPatient(ptAssinmentVO.getRcpNo());
+//			resultMap.put("receptionVO", receptionVO);
+//			resultMap.put("ptAssinmentVO", ptAssinmentVO);
+//			resultMap.put("waitHistoryVO", waitHistoryVO);
+		}
+		return resultMap;
+	}
+
+	/**
+	 * 환자 검색
+	 * @param map
+	 * @return
+	 * @return
+	 */
+	@ResponseBody
+	@PostMapping("/ptPatientSearch")
+	public List<PatientVO> patientSearch(@RequestBody Map<String, String> map) {
+		log.info("searchOption : {}", map.get("searchOption"));
+		log.info("searchWord : {}", map.get("searchWord"));
+
+		List<PatientVO> list = service.searchPatients(map);
+		return list;
+	}
+
+	/**
+	 * 환자 List 출력(초기화면)
+	 * @return
+	 */
+	@ResponseBody
+	@GetMapping("/patientList")
+	public List<PatientVO> patientList() {
+		List<PatientVO> list = service.selectPatientList();
+		return list;
+
+	}
+	
+	/**
+	 * 물리치료기록서 List 출력
+	 * @return
+	 */
+	@GetMapping("/ptDocumentList")
+	public List<PtDocumentVO> ptDocumentList(
+			@ModelAttribute("ptAssinmentVOList") PtAssinmentVO ptAssinmentVO, Model model
+			) {
+		log.info("hello ptAssinmentVOList : {dsdsdsdsdsdsdsdsd}");
+		List<PtDocumentVO> ptDocumentList = service.retrievePtDocumentAgo();
+		return ptDocumentList;
+	}
+	
+	
+}

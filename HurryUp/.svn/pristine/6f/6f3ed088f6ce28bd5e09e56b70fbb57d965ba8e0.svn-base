@@ -1,0 +1,296 @@
+@charset "UTF-8";
+/**예지**/
+*, *:before, *:after {
+	padding: 0;
+	margin: 0;
+	box-sizing: border-box;
+}
+
+body {
+	height: 100vh;
+	overflow: hidden;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background-color: #4273df;
+	background-image: linear-gradient(315deg, #1b2845 0%, #274060 74%);
+}
+
+.login-body {
+	background-color: #080710;
+}
+
+.background {
+	width: 430px;
+	height: 520px;
+	position: absolute;
+	transform: translate(-50%, -50%);
+	left: 50%;
+	top: 50%;
+	z
+}
+
+.background .shape {
+	height: 200px;
+	width: 200px;
+	position: absolute;
+	border-radius: 50%;
+}
+
+.shape:first-child {
+	background: linear-gradient(#1845ad, #23a2f6);
+	left: -80px;
+	top: -80px;
+}
+
+.shape:last-child {
+	background: linear-gradient(to right, #ff512f, #f09819);
+	right: -30px;
+	bottom: -80px;
+}
+
+#loginForm {
+	height: 520px;
+	width: 400px;
+	background-color: rgba(255, 255, 255, 0.13);
+	position: absolute;
+	transform: translate(-50%, -50%);
+	top: 50%;
+	left: 50%;
+	border-radius: 10px;
+	backdrop-filter: blur(10px);
+	border: 2px solid rgba(255, 255, 255, 0.1);
+	box-shadow: 0 0 40px rgba(8, 7, 16, 0.6);
+	padding: 50px 35px;
+}
+
+form * {
+	font-family: "Poppins", sans-serif;
+	color: #ffffff;
+	letter-spacing: 0.5px;
+	outline: none;
+	border: none;
+	z-index: 9999999;
+}
+
+form h3 {
+	font-size: 32px;
+	font-weight: 500;
+	line-height: 42px;
+	text-align: center;
+}
+
+label {
+	display: block;
+	margin-top: 30px;
+	font-size: 16px;
+	font-weight: 500;
+}
+
+.login-input-tag {
+	display: block;
+	height: 50px;
+	width: 100%;
+	background-color: rgba(255, 255, 255, 0.07);
+	border-radius: 3px;
+	padding: 0 10px;
+	margin-top: 8px;
+	font-size: 14px;
+	font-weight: 300;
+}
+
+::placeholder {
+	color: #e5e5e5;
+}
+
+button {
+	margin-top: 50px;
+	width: 100%;
+	background-color: #ffffff;
+	color: #080710;
+	padding: 15px 0;
+	font-size: 18px;
+	font-weight: 600;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.social {
+	margin-top: 30px;
+	display: flex;
+}
+
+.social div {
+	background: red;
+	width: 150px;
+	border-radius: 3px;
+	padding: 5px 10px 10px 5px;
+	background-color: rgba(255, 255, 255, 0.27);
+	color: #eaf0fb;
+	text-align: center;
+}
+
+.social div:hover {
+	background-color: rgba(255, 255, 255, 0.47);
+}
+
+.social .fb {
+	margin-left: 25px;
+}
+
+.social i {
+	margin-right: 4px;
+}
+
+video {
+	position: relative;
+	z-index: -999;
+	width: 2130px;
+	height: 1055px;
+	top: 2px;
+}
+
+.videoDiv {
+	/* 	position: absolute; */
+	width: 88%;
+}
+
+.login {
+	z-index: 99999999;
+	position: relative;
+}
+
+.loginInput {
+	background-color: #F7AA00';
+}
+
+.imgPlace {
+	vertical-align: middle;
+	position: relative;
+	left: 6%;
+}
+.profileimgPlace{
+	vertical-align: middle;
+	position: relative;
+}
+
+/********************************************/
+.card {
+	width: 150px;
+	height: 50px;
+	border-radius: 180px;
+	position: relative;
+	left: calc(50% - 75px);
+	top: calc(50% - 25px);
+	background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8,
+		#1098ad, #07b39b, #6fba82);
+	cursor: pointer;
+	line-height: 12px;
+}
+
+.card:before {
+	content: '';
+	z-index: 1;
+	position: absolute;
+	display: block;
+	width: 80%;
+	height: 70%;
+	top: 15%;
+	left: 10%;
+	transition: 0.3s opacity ease-in-out;
+	filter: blur(15px);
+	opacity: 0;
+	background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8,
+		#1098ad, #07b39b, #6fba82);
+}
+
+.card:hover:before {
+	opacity: 1;
+	transition: 0.3s opacity ease-in-out;
+	filter: blur(25px);
+	background: linear-gradient(60deg, #f79533, #f37055, #ef4e7b, #a166ab, #5073b8,
+		#1098ad, #07b39b, #6fba82);
+}
+
+.card:after {
+	content: 'CLICK ME!';
+	text-align: center;
+	line-height: 40px;
+	font-size: 18px;
+	color: rgba(235, 235, 235, 1);
+	font-weight: bold;
+	z-index: 5;
+	position: absolute;
+	display: block;
+	border-radius: 180px;
+	width: 92%;
+	height: 80%;
+	top: 10%;
+	left: 4%;
+	background-color: rgb(19, 20, 22);
+}
+/************************************/
+
+
+.logoutBtn {
+	width: 45px;
+	height: 47px;
+	opacity: 1;
+	position: absolute;
+	top: 35px;
+	left: 95%;
+	vertical-align: middle;
+}
+
+.imgPlace2 {
+	vertical-align: middle;
+	position: relative;
+	left: 6%;
+	width: 100%;
+}
+
+.logincheckBox {
+	width: 60px;
+	height: 20px;
+	position: relative;
+	top: 5px;
+}
+
+.v234_2198 {
+/* 	width: 238px; */
+	color: rgba(247, 170, 0, 1);
+/* 	position: absolute; */
+/* 	top: 616px; */
+/* 	left: 186px; */
+	font-family: GangwonEduAll;
+	font-weight: Bold;
+	font-size: 60px;
+	opacity: 1;
+/* 	text-align: left; */
+}
+
+.v234_2196 {
+	color: rgba(255, 255, 255, 1);
+/* 	position: absolute; */
+/* 	top: 72%; */
+/* 	left: 19%; */
+	font-family: GangwonEduAll;
+	font-size: 93px;
+	font-weight: Bold;
+	opacity: 1;
+/* 	text-align: center; */
+}
+
+.v234_2197 {
+	color: rgba(255, 255, 255, 1);
+/* 	position: absolute; */
+	top: 85%; left : 17%;
+	font-family: NanumGothicCoding;
+	font-weight: Bold;
+	font-size: 45px;
+	opacity: 1;
+	left: 17%;
+}
+.profile-div{
+	text-align: center;
+}

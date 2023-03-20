@@ -1,0 +1,13 @@
+package kr.or.ddit.receiption.vo;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString()
+public class SmsVO {
+	private String STT_CD;
+	private String SMS_CONT;
+}

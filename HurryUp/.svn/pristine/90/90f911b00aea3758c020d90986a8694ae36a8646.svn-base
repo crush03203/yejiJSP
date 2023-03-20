@@ -1,0 +1,29 @@
+package kr.or.ddit.commons.vo;
+
+import java.io.Serializable;
+import java.util.Date;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
+@EqualsAndHashCode(of="opNo")
+@Data
+@ToString
+public class OperationInfomationVO{
+	private String opNo;
+	private String opDate;
+	private String opState;
+	private String trmCd;
+	private String opStartTime;
+	private String opEndTime;
+	private String diseaseCd;
+	private String otCd;
+	private Date opReservStarttime;
+	private Date opReservEndtime;
+	private String paNo;
+	private String paName;
+	private String paReg;
+	private DiagHistoryVO diagHistory;
+	
+}

@@ -1,0 +1,168 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<title>수술/검사</title>
+<style>
+*{border: 1px solid pink;}
+html, body {height: 100%; overflow: hidden;}
+.oper-card{margin: 0.5rem;}
+.oper-wrapper { height: 51.5rem; display: flex;}
+.content-left {width: 31rem; height: 51.3rem;}
+.content-center {width: 31rem; height: 51.3rem;}
+.content-right {width: 58rem; height: 51.3rem;}
+.oper-pa-list {width: 30rem; height: 25rem;}
+.oper-pa-detail {width: 30rem; height: 25rem;}
+.cex-list {width: 30rem; height: 25rem;}
+.cex-input {width: 30rem; height: 25rem;}
+.oper-list {width: 56.7rem; height: 50.5rem;}
+</style>
+
+<div class="oper-wrapper">
+	<!-- 왼쪽구역시작 -->
+	<div class="content-left">
+		<div class="oper-pa-list oper-card card-grid">
+			<div class="tab patient-tab">
+			    <ul class="tabnav">
+			      <li><a href="#operWait">수술대기</a></li>
+			      <li><a href="#operSchedule">수술예정</a></li>
+			      <li><a href="#operComplete">수술완료</a></li>
+			    </ul>
+			    <div class="tabcontentWrap">
+				    <div class="tabcontent">
+				      <div id="operWait">
+				      	<table class="table-blue">
+							<thead class="fixedHeader">
+								<tr>
+									<th>차트번호</th>
+									<th>상병코드</th>
+									<th>환자번호</th>
+									<th>환자명</th>
+									<th>상병명</th>
+									<th>검사여부</th>
+							</thead>
+							<tbody id='operWaitTbody'></tbody>
+						</table>
+				      </div>
+				      <div id="operSchedule"></div>
+				      <div id="operComplete"></div>
+				    </div>
+				</div>
+			</div>	
+		</div>
+		<div class="oper-pa-detail oper-card card-grid">
+			<h4>환자상세</h4>
+		</div>
+	</div>
+	<!-- 왼쪽구역끝-->
+	
+	<!-- 가운데 구역 시작 -->
+	<div class="content-center">
+		<div class="cex-list oper-card card-grid">
+			<div class="tab cex-tab">
+			    <ul class="tabnav">
+			      <li><a href="#cexWait">검사대기</a></li>
+			      <li><a href="#cexSchedule">검사등록</a></li>
+			      <li><a href="#cexComplete">검사완료</a></li>
+			    </ul>
+			    <div class="tabcontentWrap">
+				    <div class="tabcontent">
+				      <div id="cexWait">
+				      	<table class="table-blue">
+							<thead class="fixedHeader">
+								<tr>
+									<th>차트번호</th>
+									<th>상병코드</th>
+									<th>환자번호</th>
+									<th>환자명</th>
+									<th>상병명</th>
+									<th>검사여부</th>
+							</thead>
+							<tbody id='cexWaitTbody'></tbody>
+						</table>
+				      </div>
+				      <div id="cexSchedule"></div>
+				      <div id="cexComplete"></div>
+				    </div>
+				</div>
+			</div>	
+		</div>
+		<div class="cex-input oper-card card-grid">
+		</div>
+	</div>
+	<!-- 가운데 구역 끝 -->
+	
+	<!-- 오른쪽 구역 시작 -->
+	<div class="content-right">
+		<div class="oper-list oper-card card-grid">
+			<div class="tab operation-tab">
+			    <ul class="tabnav">
+			      <li><a href="#operList">수술목록</a></li>
+			      <li><a href="#operRoom">수술실예약</a></li>
+			    </ul>
+			    <div class="tabcontentWrap">
+				    <div class="tabcontent">
+				      <div id="operList"></div>
+				      <div id="operRoom"></div>
+				    </div>
+				</div>
+			</div>	
+		</div>
+	</div>
+	<!-- 오른쪽 구역 끝 -->
+</div>
+
+<script>
+/* tab 메뉴 */
+$(function(){
+	let paTab = $(".patient-tab");
+	let paTabContents = $(".patient-tab .tabcontent > div");
+	let cexTab = $(".cex-tab");
+	let cexTabContents = $(".cex-tab .tabcontent > div");
+	let operTab = $(".operation-tab");
+	let operTabContents = $(".operation-tab .tabcontent > div");
+
+	$('.tabcontent > div').hide();
+	
+	let paTabNavs = $('.patient-tab li a').click(function () {
+		paTabContents.hide().filter(this.hash).fadeIn();
+		paTabNavs.removeClass('active');
+		$(this).addClass('active');
+		return false;
+	});
+	paTabNavs.eq(0).click();
+	
+	let cexTabNavs = $('.cex-tab li a').click(function () {
+		cexTabContents.hide().filter(this.hash).fadeIn();
+		cexTabNavs.removeClass('active');
+		$(this).addClass('active');
+		return false;
+	});
+	cexTabNavs.eq(0).click();
+	
+	let operTabNavs = $('.operation-tab li a').click(function () {
+		operTabContents.hide().filter(this.hash).fadeIn();
+		operTabNavs.removeClass('active');
+		$(this).addClass('active');
+		return false;
+	});
+	operTabNavs.eq(0).click();
+});
+
+/* 수술대기 환자 리스트 출력  */
+let operationList = function(){
+	$.ajax({
+		url : "operationList",
+		method : "get",
+		contentType: "application/json;charset=utf-8",
+		dataType : "json",
+		success : function(result) {
+			console.log(result);
+		},
+		error : function(jqXHR, status, error) {
+			console.log(jqXHR);
+			console.log(status);
+			console.log(error);
+		}
+	});
+}
+operationList();
+</script>
